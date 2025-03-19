@@ -1,8 +1,9 @@
-# Maintainer: Vilmar Catafesta <vcatafesta@gmail.com>
+# Maintainer: Leonardo Berbert <leo4berbert@gmail.com>
+# Contributor: Vilmar Catafesta <vcatafesta@gmail.com>
 # Contributor: Tales A. Mendonça <talesam@gmail.com>
 
-pkgname=com-template
-pkgdesc="Meta package for comm-template"
+pkgname=comm-openbbox
+pkgdesc="Meta package for Openbox"
 pkgver=$(date +%Y%m%d)
 pkgrel=$(date +%H%M)
 arch=('any')
@@ -11,10 +12,102 @@ url="https://github.com/communitybig/${pkgname}"
 source=("git+${url}.git")
 md5sums=('SKIP')
 depends=(
-  bash              # coloque aqui o nome do teu principal pacote
+ openbox
+ xorg-xinit 
+ xorg-server 
+ base-devel
 )
 optdepends=(
-  bash-completion   # coloque aqui o nome dos outros pacotes que fazem parte do meta pacote (um abaixo do outro)
+ openbox-themes
+ comm-wallpapers-openbox
+ obconf
+ obmenu
+ obmenu-generator
+ nordzy-cursors
+ picom
+ nitrogen
+ dunst
+ tint2
+ polybar
+ rofi
+ pastel
+ perl
+ python
+ python-pywal
+ python-lxml
+ xmlstarlet
+ thunar
+ plank
+ alacritty
+ kitty
+ feh
+ conky
+ firefox
+ geany
+ betterlockscreen
+ #XFCE
+ xfce4-terminal
+ xfce4-settings
+ xfce4-power-manager
+ # PolicyKit authentication
+ polkit
+ xfce-polkit
+ # Login
+ lightdm
+ lightdm-slick-greeter
+ lightdm-settings
+ #Sound
+ mpc
+ mpd
+ pulsemixer
+ pipewire
+ pipewire-pulse
+ # Extras
+ paprefs
+ viewnior
+ networkmanager
+ networkmanager-dmenu-git
+ network-manager-applet
+ perl-json-xs
+ light
+ perl-linux-desktopfiles
+ zsh
+ zsh-completions
+ glxinfo
+ libnotify
+ libsndfile
+ lib32-libsndfile
+ xf86-input-elographics
+ xf86-input-evdev
+ xf86-input-libinput
+ xf86-input-vmmouse
+ xf86-input-void
+ xdotool
+ xclip
+ xcolor
+ imagemagick
+ # X11 Server and components
+ xorg-server
+ xorg-xinit
+ xorg-xrandr
+ xorg-xrdb
+ xorg-xbacklight
+ xorg-xinput
+ xorg-xkill
+ xorg-xprop 
+
+ # Nerd Fonts
+ ttf-fira-sans
+ ttf-fira-code
+ ttf-firacode-nerd
+ ttf-dejavu
+ ttf-nerd-fonts-symbols-with-biglinux
+ ttf-jetbrains-mono
+ ttf-dejavu
+ ttf-liberation
+ ttf-nerd-fonts-symbols
+ ttf-nerd-fonts-symbols-common
+ ttf-nerd-fonts-symbols-mono
 )
 
 # Automatically detect and use the correct install file
