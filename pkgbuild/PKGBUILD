@@ -1,5 +1,5 @@
-# Maintainer: Leonardo Berbert <leo4berbert@gmail.com>
-# Contributor: Vilmar Catafesta <vcatafesta@gmail.com>
+# Maintainer:  Leonardo Berbert  <leo4berbert@gmail.com>
+# Contributor: Vilmar Catafesta  <vcatafesta@gmail.com>
 # Contributor: Tales A. Mendonça <talesam@gmail.com>
 
 pkgname=comm-openbbox
@@ -11,14 +11,14 @@ license=('MIT')
 url="https://github.com/communitybig/${pkgname}"
 source=("git+${url}.git")
 md5sums=('SKIP')
+options=(!strip !emptydirs)
 depends=(
  openbox
- xorg-xinit 
- xorg-server 
- base-devel
 )
 optdepends=(
+ base-devel
  openbox-themes
+ openbox-fonts
  comm-wallpapers-openbox
  obconf
  obmenu
@@ -37,6 +37,9 @@ optdepends=(
  python-lxml
  xmlstarlet
  thunar
+ thunar-archive-plugin
+ thunar-media-tags-plugin
+ thunar-volman
  plank
  alacritty
  kitty
@@ -44,14 +47,34 @@ optdepends=(
  conky
  firefox
  geany
+ geany-plugins
  betterlockscreen
+ blueman
+ broadcom-wl
+ gtk3
+ gtk4
+ inotify-tools
+ lua
+ mplayer
+ ncurses
+ nfs-utils
+ wireless_tools
+ unrar
+ udisks2
+ timeshift
+ grub-btrfs-timeshift
+ grub-btrfs
+ snappy
+ yad
+
  #XFCE
- xfce4-terminal
- xfce4-settings
+ xfce-polkit
+ xfce4-notifyd
  xfce4-power-manager
+ xfce4-settings
+ xfce4-terminal
  # PolicyKit authentication
  polkit
- xfce-polkit
  # Login
  lightdm
  lightdm-slick-greeter
@@ -62,15 +85,25 @@ optdepends=(
  pulsemixer
  pipewire
  pipewire-pulse
+ volume_key
  # Extras
+ autoconf
+ automake
  paprefs
  viewnior
+ network-manager-applet
+ network-manager-sstp
  networkmanager
  networkmanager-dmenu-git
- network-manager-applet
+ networkmanager-openconnect
+ networkmanager-openvpn
+ networkmanager-pptp
+ networkmanager-strongswan
+ networkmanager-vpnc
  perl-json-xs
  light
  perl-linux-desktopfiles
+ sound-theme-freedesktop
  zsh
  zsh-completions
  glxinfo
@@ -86,16 +119,61 @@ optdepends=(
  xclip
  xcolor
  imagemagick
+ ethtool
+ ffmpeg
  # X11 Server and components
+ egl-x11
+ xorg-bdftopcf
+ xorg-docs
+ xorg-font-util
+ xorg-fonts-100dpi
+ xorg-fonts-75dpi
+ xorg-fonts-alias-100dpi
+ xorg-fonts-alias-75dpi
+ xorg-fonts-encodings
+ xorg-iceauth
+ xorg-mkfontscale
  xorg-server
- xorg-xinit
+ xorg-server-common
+ xorg-server-devel
+ xorg-server-xephyr
+ xorg-server-xnest
+ xorg-server-xvfb
+ xorg-sessreg
+ xorg-setxkbmap
+ xorg-smproxy
+ xorg-util-macros
+ xorg-x11perf
+ xorg-xauth
+ xorg-xbacklight
+ xorg-xcmsdb
+ xorg-xcursorgen
+ xorg-xdpyinfo
+ xorg-xdriinfo
+ xorg-xev
+ xorg-xgamma
+ xorg-xhost
+ xorg-xinput
+ xorg-xkbcomp
+ xorg-xkbevd
+ xorg-xkbutils
+ xorg-xkill
+ xorg-xlsatoms
+ xorg-xlsclients
+ xorg-xmodmap
+ xorg-xpr
+ xorg-xprop
  xorg-xrandr
  xorg-xrdb
- xorg-xbacklight
- xorg-xinput
- xorg-xkill
- xorg-xprop 
-
+ xorg-xrefresh
+ xorg-xset
+ xorg-xsetroot
+ xorg-xvinfo
+ xorg-xwayland
+ xorg-xwd
+ xorg-xwininfo
+ xorg-xwud
+ xorgproto
  # Nerd Fonts
  ttf-fira-sans
  ttf-fira-code
@@ -118,9 +196,7 @@ elif [ -e "pkgbuild.install" ]; then
 fi
 
 prepare() {
-	cd "${srcdir}/${pkgname}"
-	# Add any preparation steps here, if needed
-	# For example: patch -p1 < "${srcdir}/patch-file.patch"
+	cp -af ../files/. "$srcdir"
 }
 
 build() {
@@ -134,35 +210,57 @@ check() {
 	# Add check/test steps here, if needed
 	# For example: make check
 }
-
 package() {
-	cd "${srcdir}/${pkgname}"
+	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
+	local _configdir="$pkgdir"/etc/skel/.config
+	local _obdir="$_configdir"/openbox
 
-	mkdir -p "${pkgdir}/usr/share/${pkgname}"
-	printf "%s\n" "${optdepends[@]}" >"${pkgdir}/usr/share/${pkgname}/optdepends"
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir"
 
-	# Determine the correct source directory
-	if [ -d "${pkgname}" ]; then
-		srcdir="${srcdir}/${pkgname}/${pkgname}"
-	else
-		srcdir="${srcdir}/${pkgname}"
-	fi
+	# Copy shared files & set permissions
+	cp -r "$srcdir"/icons 					"$_sharedir"
+	cp -r "$srcdir"/menulib 				"$_sharedir"
+	cp -r "$srcdir"/ob-random 				"$_sharedir"
+	cp -r "$srcdir"/pipemenus 				"$_sharedir"
+	chmod +x "$_sharedir"/pipemenus/*
+	
+	# Copy openbox specific configs
+	cp -r "$srcdir"/alacritty 				"$_configdir"
+	cp -r "$srcdir"/kitty 					"$_configdir"
+	cp -r "$srcdir"/networkmanager-dmenu 	"$_configdir"
+	cp -r "$srcdir"/nitrogen 				"$_configdir"
+	cp -r "$srcdir"/obmenu-generator 		"$_configdir"
+	cp -r "$srcdir"/plank 					"$_configdir"
 
-	# Install files
-	local dirs=("usr" "etc" "opt")
-	for dir in "${dirs[@]}"; do
-		if [ -d "${srcdir}/${dir}" ]; then
-			cp -a "${srcdir}/${dir}" "${pkgdir}/"
-		fi
+	# Copy window manager configs
+	install -Dm 755 autostart   			"$_obdir"/autostart
+	install -Dm 644 environment				"$_obdir"/environment
+	install -Dm 644 menu-glyphs.xml			"$_obdir"/menu-glyphs.xml
+	install -Dm 644 menu-icons.xml			"$_obdir"/menu-icons.xml
+	install -Dm 644 menu-minimal.xml		"$_obdir"/menu-minimal.xml
+	install -Dm 644 menu-simple.xml			"$_obdir"/menu-simple.xml
+	install -Dm 644 rc.xml					"$_obdir"/rc.xml
+
+	# Copy openbox scripts
+	cp -r "$srcdir"/scripts 				"$_obdir"
+	chmod +x "$_obdir"/scripts/*
+
+	# Copy openbox themes
+	cp -r "$srcdir"/themes 					"$_obdir"
+	chmod +x "$_obdir"/themes/{launch-bar,polybar,tint2}.sh
+
+	apply_files=(`find ${_obdir}/themes -type f | grep apply.sh`)
+	for _afile in "${apply_files[@]}"; do
+		chmod +x ${_afile}
 	done
 
-	# Install license file if present
-	if [ -f "LICENSE" ]; then
-		install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-	fi
+	launch_files=(`find ${_obdir}/themes -type f | grep launch.sh`)
+	for _lfile in "${launch_files[@]}"; do
+		chmod +x ${_lfile}
+	done
 
-	# Install documentation if present
-	if [ -f "README.md" ]; then
-		install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
-	fi
+	scripts_dir=(`find ${_obdir}/themes -type d | grep scripts`)
+	for _script in "${scripts_dir[@]}"; do
+		chmod +x ${_script}/*
+	done
 }

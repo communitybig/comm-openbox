@@ -18,7 +18,7 @@ export white="\033[1;37m"
 export bold="\033[1m"
 export reset="\033[0m"
 declare IS_UPGRADE=false
-declare WM='enlightenment'
+declare WM='openbox'
 declare DM='lightdm'
 declare pkgname=comm-"${WM}"
 
