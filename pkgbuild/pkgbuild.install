@@ -1,0 +1,210 @@
+#!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+
+export TERM=${TERM:-xterm}
+export TERM=${TERM:-xterm-256color}
+
+# Defining color variables (bold only)
+export black="\033[1;30m"
+export red="\033[1;31m"
+export green="\033[1;32m"
+export yellow="\033[1;33m"
+export blue="\033[1;34m"
+export magenta="\033[1;35m"
+export cyan="\033[1;36m"
+export white="\033[1;37m"
+
+# Setting variables for bold and reset
+export bold="\033[1m"
+export reset="\033[0m"
+declare IS_UPGRADE=false
+declare WM='enlightenment'
+declare DM='lightdm'
+declare pkgname=comm-"${WM}"
+
+msg() {
+	local msg="$1"
+	echo -e "${green}==>[${pkgname}] ${bold}${yellow}${msg}${reset}" >&2
+}
+
+sh_load_optdepends() {
+	local info_file="/usr/share/${pkgname}/optdepends"
+
+	if [[ -f "$info_file" && -r "$info_file" ]]; then
+		mapfile -t OPTDEPENDS <"$info_file"
+	else
+		msg "${red}FATAL: Something went wrong! File '$info_file' not found or without read permission."
+		msg "${red}FATAL: Something went wrong! File '$info_file' not found or without read permission."
+	fi
+}
+
+sh_start_dbus_in_chroot() {
+  # Verifica se o D-Bus já está em execução
+  if ! pgrep -x "dbus-daemon" >/dev/null; then
+    # Cria o diretório para o socket do D-Bus
+    mkdir -p /run/dbus
+    chmod 755 /run/dbus
+
+    # Inicia o D-Bus
+    dbus-daemon --system --fork
+
+    # Configura as variáveis de ambiente
+    export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
+    export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
+  fi
+}
+
+post_install() {
+	msg "Initializing system installation and configuration..."
+
+	sh_load_optdepends
+
+	[[ -e /etc/environment ]] && source /etc/environment
+	: "${IN_CHROOT_INSTALLER:=false}"
+	: "${IN_CHROOT_INSTALLER_USER:=root}"
+
+  if $IN_CHROOT_INSTALLER; then
+    # sh_start_dbus_in_chroot
+    :
+  fi
+
+	if [[ -f /var/lib/pacman/db.lck ]]; then
+		rm -f /var/lib/pacman/db.lck &>/dev/null
+	fi
+
+	# Common packages for all GPUs
+	COMMON_PACKAGES=(
+		mhwd-biglinux
+		mesa
+		lib32-mesa
+		vulkan-mesa-layers
+		lib32-vulkan-mesa-layers
+	)
+
+	synchronizing_database() {
+		pacman -Sy --quiet --noconfirm &>/dev/null
+	}
+
+	install_packages() {
+		pacman -S --quiet --noconfirm --needed --overwrite \* "$@" &>/dev/null
+	}
+
+	msg "Please wait, synchronizing databases..."
+	synchronizing_database
+
+	msg "Installing common packages: ${COMMON_PACKAGES[*]}"
+	install_packages "${COMMON_PACKAGES[@]}"
+
+	msg "Installing optdepends packages: ${OPTDEPENDS[*]}"
+	install_packages "${OPTDEPENDS[@]}"
+
+	msg "Detecting GPU and installing appropriate drivers..."
+	GPU_INFO=$(lspci -nnk | grep -A3 -E "VGA|3D|Display")
+
+	if grep -qiw "NVIDIA" <<<"$GPU_INFO"; then
+		msg "NVIDIA detected! Installing drivers..."
+
+		msg "Detect kernel version and set package name"
+		KERNEL_VERSION=$(uname -r | cut -d '.' -f1,2 | tr -d '.')
+		KERNEL_PACKAGE="linux${KERNEL_VERSION}-nvidia"
+
+		msg "Detected kernel: $KERNEL_VERSION"
+		msg "Installing NVIDIA packages: $KERNEL_PACKAGE nvidia-utils nvidia-settings"
+		install_packages "$KERNEL_PACKAGE" nvidia-utils nvidia-settings
+
+		msg "Blacklisting Nouveau..."
+		cat <<EOF | tee /etc/modprobe.d/nouveau.conf /etc/modprobe.d/blacklist.conf
+blacklist nouveau
+install nouveau /bin/true
+EOF
+	elif grep -qiw "Intel" <<<"$GPU_INFO"; then
+		msg "Intel GPU detected! Installing drivers..."
+		install_packages vulkan-intel lib32-vulkan-intel
+		:
+	elif grep -qEiw "AMD|ATI" <<<"$GPU_INFO"; then
+		msg "AMD/ATI GPU detected! Installing drivers..."
+		install_packages mesa-utils \
+			vulkan-icd-loader lib32-vulkan-icd-loader \
+			vulkan-headers vulkan-radeon lib32-vulkan-radeon \
+			mhwd-amdgpu mhwd-ati
+		:
+	else
+		msg "${yellow}Warning: No compatible GPU detected. Skipping driver installation.${reset}"
+	fi
+
+	msg "Create the ${DM^} user if it doesn't exist"
+	if ! id "${DM}" >/dev/null; then
+		msg "Creating ${DM^} user..."
+		useradd -r -s /usr/bin/nologin -M -d /var/lib/${DM} ${DM} &>/dev/null
+	else
+		msg "${DM^} user already exists, skipping creation."
+	fi
+
+	msg "Setting up ${DM^} directory..."
+	mkdir -p /var/lib/${DM} >/dev/null
+	chown -R ${DM}:${DM} /var/lib/${DM} >/dev/null
+
+	msg "Setting up user..."
+	user=$(awk -F: '$3 >= 1000 && $3 < 65000 { print $1; exit }' /etc/passwd)
+	if $IN_CHROOT_INSTALLER; then
+		if [[ -n $IN_CHROOT_INSTALLER_USER || $IN_CHROOT_INSTALLER_USER != 'root' ]]; then
+			user=$IN_CHROOT_INSTALLER_USER
+		fi
+	fi
+	user_home=$(getent passwd "$user" | cut -d: -f6)
+
+	msg "Copying skel to $user_home..."
+	mkdir -p "$user_home" &>/dev/null
+	cp -Rfpa /etc/skel/. "$user_home/" &>/dev/null
+
+	msg "Setting user folder permissions in ${user_home}"
+	chown -R "$user:$user" "$user_home" &>/dev/null
+
+	msg "Configuring Nautilus..."
+	if glib-compile-schemas /usr/share/glib-2.0/schemas/; then
+		msg "Nautilus schemas compiled successfully!"
+	else
+		msg "${yellow}Warning: Failed to compile Nautilus schemas. Some features may not work correctly.${reset}"
+	fi
+
+	if ! $IS_UPGRADE; then
+		msg "Enabling ${DM^}..."
+		if ! systemctl enable ${DM} &>/dev/null; then
+			msg "${red}Error: It went wrong when activating ${DM^}"
+		fi
+	fi
+
+	if ! $IN_CHROOT_INSTALLER; then
+		if ! $IS_UPGRADE; then
+			msg "Please wait, Generating initramfs for all kernels..."
+			mkinitcpio -P &>/dev/null
+
+			msg "Configuring GRUB..."
+			# Change GRUB config
+			sed -i "s/^GRUB_DISTRIBUTOR=\"\(.*\)\"/GRUB_DISTRIBUTOR=\"\1 ${WM}\"/" /etc/default/grub 1>/dev/null
+			sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="quiet splash plymouth.enable=1 loglevel=4 libata.noacpi=1 acpi=force apm=power-off nowatchdog tsc=nowatchdog cryptomgr.notests no_timer_check rcupdate.rcu_expedited=1 intel_pstate=active amd_pstate=active cpuidle.governor=teo split_lock_detect=off clearcpuid=514 transparent_hugepage=never skew_tick=1 intremap=off nosoftlockup audit=0 nomce systemd.show_status=auto rd.udev.log_level=3 apparmor=1 security=apparmor vconsole.font=Uni2-Fixed16 intel_iommu=on amd_iommu=on tdx=on nvme_load=yes nouveau.modeset=1 i915.modeset=1 amdgpu.modeset=1 radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1 nvidia.modeset=1 nvidia_drm.modeset=1 DEEPIN_GFXMODE="|' /etc/default/grub 1>/dev/null
+
+			msg "Generating GRUB configuration files..."
+			update-grub &>/dev/null
+		fi
+	fi
+
+	if ! $IS_UPGRADE; then
+		msg "Installation complete. Rebooting in 10 seconds..."
+		# Countdown before reboot
+		for i in $(seq 10 -1 1); do
+			printf "%d..." "$i"
+			sleep 1
+		done
+		echo
+		msg "Rebooting now..."
+		reboot
+	else
+		msg "Upgrade complete."
+	fi
+}
+
+post_upgrade() {
+	IS_UPGRADE=true
+	post_install
+}
