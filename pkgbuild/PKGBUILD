@@ -212,11 +212,13 @@ package() {
 
 	mkdir -p "${pkgdir}/usr/share/${pkgname}"
 	printf "%s\n" "${optdepends[@]}" > "${pkgdir}/usr/share/${pkgname}/optdepends"
-
+	
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _obdir="$_configdir"/openbox
 	
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir"
+
 	# Copy shared files & set permissions
 	cp -r "$srcdir"/icons 					"$_sharedir"
 	cp -r "$srcdir"/menulib 				"$_sharedir"
