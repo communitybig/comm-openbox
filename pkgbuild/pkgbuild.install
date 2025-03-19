@@ -32,11 +32,28 @@ sh_load_optdepends() {
 
 	if [[ -f "$info_file" && -r "$info_file" ]]; then
 		mapfile -t OPTDEPENDS <"$info_file"
+
+		# Verifica se a variável foi carregada corretamente
+		if [[ ${#OPTDEPENDS[@]} -eq 0 ]]; then
+			msg "${yellow}WARNING: O arquivo '$info_file' foi lido, mas não contém pacotes válidos.${reset}"
+		else
+			msg "Pacotes opcionais carregados: ${OPTDEPENDS[*]}"
+		fi
 	else
-		msg "${red}FATAL: Something went wrong! File '$info_file' not found or without read permission."
-		msg "${red}FATAL: Something went wrong! File '$info_file' not found or without read permission."
+		msg "${red}FATAL: Erro ao acessar '$info_file'. Arquivo não encontrado ou sem permissão de leitura.${reset}"
 	fi
 }
+
+#sh_load_optdepends() {
+#	local info_file="/usr/share/${pkgname}/optdepends"
+#
+#	if [[ -f "$info_file" && -r "$info_file" ]]; then
+#		mapfile -t OPTDEPENDS <"$info_file"
+#	else
+#		msg "${red}FATAL: Something went wrong! File '$info_file' not found or without read permission."
+#		msg "${red}FATAL: Something went wrong! File '$info_file' not found or without read permission."
+#	fi
+#}
 
 sh_start_dbus_in_chroot() {
   # Verifica se o D-Bus já está em execução
