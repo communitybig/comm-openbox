@@ -2,7 +2,7 @@
 # Contributor: Vilmar Catafesta  <vcatafesta@gmail.com>
 # Contributor: Tales A. Mendonça <talesam@gmail.com>
 
-pkgname=comm-openbbox
+pkgname=comm-openbox
 pkgdesc="Meta package for Openbox"
 pkgver=$(date +%Y%m%d)
 pkgrel=$(date +%H%M)
