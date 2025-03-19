@@ -65,7 +65,6 @@ optdepends=(
  grub-btrfs
  snappy
  yad
-
  #XFCE
  xfce-polkit
  xfce4-notifyd
@@ -210,12 +209,16 @@ check() {
 	# For example: make check
 }
 package() {
+	cd "${srcdir}/${pkgname}"
+	mkdir -p "${pkgdir}/usr/share/${pkgname}"
+
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _obdir="$_configdir"/openbox
 
 	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir"
-
+	printf "%s\n" "${optdepends[@]}" > "${pkgdir}/usr/share/${pkgname}/optdepends"
+	
 	# Copy shared files & set permissions
 	cp -r "$srcdir"/icons 					"$_sharedir"
 	cp -r "$srcdir"/menulib 				"$_sharedir"
