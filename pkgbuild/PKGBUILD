@@ -209,9 +209,10 @@ check() {
 	# For example: make check
 }
 package() {
-	cd "${srcdir}/${pkgname}"
-	mkdir -p "${pkgdir}/usr/share/${pkgname}"
 
+	mkdir -p "${pkgdir}/usr/share/${pkgname}"
+	printf "%s\n" "${optdepends[@]}" > "${pkgdir}/usr/share/${pkgname}/optdepends"
+	
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _obdir="$_configdir"/openbox
@@ -265,4 +266,5 @@ package() {
 	for _script in "${scripts_dir[@]}"; do
 		chmod +x ${_script}/*
 	done
+
 }
