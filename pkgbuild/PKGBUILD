@@ -11,7 +11,6 @@ license=('MIT')
 url="https://github.com/communitybig/${pkgname}"
 source=("git+${url}.git")
 md5sums=('SKIP')
-options=(!strip !emptydirs)
 depends=(
  openbox
 )
