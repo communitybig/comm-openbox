@@ -65,7 +65,6 @@ optdepends=(
  grub-btrfs
  snappy
  yad
-
  #XFCE
  xfce-polkit
  xfce4-notifyd
@@ -101,7 +100,7 @@ optdepends=(
  networkmanager-vpnc
  perl-json-xs
  light
- perl-linux-desktopfiles
+ #perl-linux-desktopfiles
  sound-theme-freedesktop
  zsh
  zsh-completions
@@ -174,17 +173,17 @@ optdepends=(
  xorg-xwud
  xorgproto
  # Nerd Fonts
- ttf-fira-sans
- ttf-fira-code
- ttf-firacode-nerd
- ttf-dejavu
- ttf-nerd-fonts-symbols-with-biglinux
- ttf-jetbrains-mono
- ttf-dejavu
- ttf-liberation
- ttf-nerd-fonts-symbols
- ttf-nerd-fonts-symbols-common
- ttf-nerd-fonts-symbols-mono
+ #ttf-fira-sans
+ #ttf-fira-code
+ #ttf-firacode-nerd
+ #ttf-dejavu
+ #ttf-nerd-fonts-symbols-with-biglinux
+ #ttf-jetbrains-mono
+ #ttf-dejavu
+ #ttf-liberation
+ #ttf-nerd-fonts-symbols
+ #ttf-nerd-fonts-symbols-common
+ #ttf-nerd-fonts-symbols-mono
 )
 
 # Automatically detect and use the correct install file
@@ -210,10 +209,14 @@ check() {
 	# For example: make check
 }
 package() {
+
+	mkdir -p "${pkgdir}/usr/share/${pkgname}"
+	printf "%s\n" "${optdepends[@]}" > "${pkgdir}/usr/share/${pkgname}/optdepends"
+	
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _obdir="$_configdir"/openbox
-
+	
 	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir"
 
 	# Copy shared files & set permissions
@@ -262,4 +265,5 @@ package() {
 	for _script in "${scripts_dir[@]}"; do
 		chmod +x ${_script}/*
 	done
+
 }
