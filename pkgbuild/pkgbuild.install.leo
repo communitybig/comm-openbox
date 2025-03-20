@@ -13,16 +13,6 @@ export blue="\033[1;34m"
 export magenta="\033[1;35m"
 export cyan="\033[1;36m"
 export white="\033[1;37m"
-#
-export COL_NC='\e[0m' # No Color
-export COL_LIGHT_GREEN='\e[1;32m'
-export COL_LIGHT_RED='\e[1;31m'
-export TICK="${white}[${COL_LIGHT_GREEN}✓${COL_NC}${white}]"
-export CROSS="${white}[${COL_LIGHT_RED}✗${COL_NC}${white}]"
-export INFO="[i]"
-export DONE="${COL_LIGHT_GREEN} done!${COL_NC}"
-export OVER="\\r\\033[K"
-export DOTPREFIX="  ${black}::${reset} "
 
 # Setting variables for bold and reset
 export bold="\033[1m"
@@ -31,19 +21,10 @@ declare IS_UPGRADE=false
 declare WM='openbox'
 declare DM='lightdm'
 declare pkgname=comm-"${WM}"
-declare servicesToEnable=(${DM} mpd sshd bluetooth)
-declare servicesToDisable=(lxdm sddm gdm)
 
 msg() {
 	local msg="$1"
 	echo -e "${green}==>[${pkgname}] ${bold}${yellow}${msg}${reset}" >&2
-}
-
-die() {
-	local msg=$1
-	shift
-	printf "  %b %s\\n" "${CROSS}" "${red}${msg}${reset}"
-	exit 1
 }
 
 sh_load_optdepends() {
@@ -58,28 +39,28 @@ sh_load_optdepends() {
 }
 
 sh_check_package_exist() {
-	local pkg
-	for pkg in "${OPTDEPENDS[@]}"; do
-		if ! pacman -Ss "^$pkg$"; then
-			die "Fatal: package '$pkg' not exist"
-		fi
-	done
+  local pkg
+  for pkg in "${OPTDEPENDS[@]}"; do
+    if ! pacman -Ss "^$pkg$"; then
+      die "Fatal: package '$pkg' not exist"
+    fi
+  done
 }
 
 sh_start_dbus_in_chroot() {
-	# Verifica se o D-Bus já está em execução
-	if ! pgrep -x "dbus-daemon" >/dev/null; then
-		# Cria o diretório para o socket do D-Bus
-		mkdir -p /run/dbus
-		chmod 755 /run/dbus
+  # Verifica se o D-Bus já está em execução
+  if ! pgrep -x "dbus-daemon" >/dev/null; then
+    # Cria o diretório para o socket do D-Bus
+    mkdir -p /run/dbus
+    chmod 755 /run/dbus
 
-		# Inicia o D-Bus
-		dbus-daemon --system --fork
+    # Inicia o D-Bus
+    dbus-daemon --system --fork
 
-		# Configura as variáveis de ambiente
-		export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
-		export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
-	fi
+    # Configura as variáveis de ambiente
+    export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
+    export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
+  fi
 }
 
 post_install() {
@@ -91,13 +72,11 @@ post_install() {
 	: "${IN_CHROOT_INSTALLER:=false}"
 	: "${IN_CHROOT_INSTALLER_USER:=root}"
 
-	if $IN_CHROOT_INSTALLER; then
-		# sh_start_dbus_in_chroot
-		:
-	fi
+  if $IN_CHROOT_INSTALLER; then
+    sh_start_dbus_in_chroot
+  fi
 
 	if [[ -f /var/lib/pacman/db.lck ]]; then
-		msg "Removing pacman lock: /var/lib/pacman/db.lck"
 		rm -f /var/lib/pacman/db.lck &>/dev/null
 	fi
 
@@ -123,9 +102,6 @@ post_install() {
 
 	msg "Installing common packages: ${COMMON_PACKAGES[*]}"
 	install_packages "${COMMON_PACKAGES[@]}"
-
-	msg "Checking for the existence of packages..."
-	sh_check_package_exist
 
 	msg "Installing optdepends packages: ${OPTDEPENDS[*]}"
 	install_packages "${OPTDEPENDS[@]}"
@@ -192,13 +168,11 @@ EOF
 	msg "Setting user folder permissions in ${user_home}"
 	chown -R "$user:$user" "$user_home" &>/dev/null
 
-	if command -v nautilus >/dev/null; then
-		msg "Configuring Nautilus..."
-		if glib-compile-schemas /usr/share/glib-2.0/schemas/; then
-			msg "Nautilus schemas compiled successfully!"
-		else
-			msg "${yellow}Warning: Failed to compile Nautilus schemas. Some features may not work correctly.${reset}"
-		fi
+	msg "Configuring Nautilus..."
+	if glib-compile-schemas /usr/share/glib-2.0/schemas/; then
+		msg "Nautilus schemas compiled successfully!"
+	else
+		msg "${yellow}Warning: Failed to compile Nautilus schemas. Some features may not work correctly.${reset}"
 	fi
 
 	if ! $IS_UPGRADE; then
@@ -208,48 +182,20 @@ EOF
 		fi
 	fi
 
-	for service in "${servicesToDisable[@]}"; do
-		if systemctl is-active --quiet "${service}"; then
-			msg "Disabling service ${service}..."
-			if ! systemctl disable ${service} &>/dev/null; then
-				msg "${red}Error: It went wrong when desactivating service ${service}"
-			fi
-		else
-			msg "${green}Service ${service} is already inactive..."
-			continue
-		fi
-	done
-
-	for service in "${servicesToEnable[@]}"; do
-		if systemctl is-active --quiet "${service}"; then
-			msg "${green}Service ${service} is already active..."
-			continue
-		else
-			if ! systemctl enable ${service} &>/dev/null; then
-				msg "${red}Error: It went wrong when activating service ${service}"
-			fi
-		fi
-	done
-
 	if ! $IN_CHROOT_INSTALLER; then
 		if ! $IS_UPGRADE; then
 			msg "Please wait, Generating initramfs for all kernels..."
 			mkinitcpio -P &>/dev/null
-		fi
 
-		msg "Configuring GRUB..."
-		# Change GRUB config
-		if ! grep -qi "${WM}" /etc/default/grub; then
-			sed -i "s/^GRUB_DISTRIBUTOR=\"\(.*\)\"/GRUB_DISTRIBUTOR=\"\1 ${WM^}\"/" /etc/default/grub
-		fi
-		sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="quiet splash plymouth.enable=1 loglevel=4 libata.noacpi=1 acpi=force apm=power-off nowatchdog tsc=nowatchdog cryptomgr.notests no_timer_check rcupdate.rcu_expedited=1 intel_pstate=active amd_pstate=active cpuidle.governor=teo split_lock_detect=off clearcpuid=514 transparent_hugepage=never skew_tick=1 intremap=off nosoftlockup audit=0 nomce systemd.show_status=auto rd.udev.log_level=3 apparmor=1 security=apparmor vconsole.font=Uni2-Fixed16 intel_iommu=on amd_iommu=on tdx=on nvme_load=yes nouveau.modeset=1 i915.modeset=1 amdgpu.modeset=1 radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1 nvidia.modeset=1 nvidia_drm.modeset=1 DEEPIN_GFXMODE="|' /etc/default/grub 1>/dev/null
+			msg "Configuring GRUB..."
+			# Change GRUB config
+			sed -i "s/^GRUB_DISTRIBUTOR=\"\(.*\)\"/GRUB_DISTRIBUTOR=\"\1 ${WM}\"/" /etc/default/grub 1>/dev/null
+			sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="quiet splash plymouth.enable=1 loglevel=4 libata.noacpi=1 acpi=force apm=power-off nowatchdog tsc=nowatchdog cryptomgr.notests no_timer_check rcupdate.rcu_expedited=1 intel_pstate=active amd_pstate=active cpuidle.governor=teo split_lock_detect=off clearcpuid=514 transparent_hugepage=never skew_tick=1 intremap=off nosoftlockup audit=0 nomce systemd.show_status=auto rd.udev.log_level=3 apparmor=1 security=apparmor vconsole.font=Uni2-Fixed16 intel_iommu=on amd_iommu=on tdx=on nvme_load=yes nouveau.modeset=1 i915.modeset=1 amdgpu.modeset=1 radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1 nvidia.modeset=1 nvidia_drm.modeset=1 DEEPIN_GFXMODE="|' /etc/default/grub 1>/dev/null
 
-		msg "Generating GRUB configuration files..."
-		update-grub &>/dev/null
+			msg "Generating GRUB configuration files..."
+			update-grub &>/dev/null
+		fi
 	fi
-
-	msg "Restauring pacman lock: /var/lib/pacman/db.lck"
-	touch /var/lib/pacman/db.lck &>/dev/null
 
 	if ! $IS_UPGRADE; then
 		msg "Installation complete. Rebooting in 10 seconds..."
