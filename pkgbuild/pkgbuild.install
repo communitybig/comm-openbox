@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
+# shellcheck source=/dev/null
 
 export TERM=${TERM:-xterm}
 export TERM=${TERM:-xterm-256color}
@@ -28,10 +29,10 @@ export DOTPREFIX="  ${black}::${reset} "
 export bold="\033[1m"
 export reset="\033[0m"
 declare IS_UPGRADE=false
-declare WM='openbox'
 declare DM='lightdm'
+declare WM='openbox'
 declare pkgname=comm-"${WM}"
-declare servicesToEnable=(${DM} mpd sshd bluetooth)
+declare servicesToEnable=("${DM}" mpd shd bluetooth)
 declare servicesToDisable=(lxdm sddm gdm)
 
 msg() {
@@ -39,10 +40,15 @@ msg() {
 	echo -e "${green}==>[${pkgname}] ${bold}${yellow}${msg}${reset}" >&2
 }
 
+log_ok() {  echo -e "  ${TICK} ${*}${reset}"; }
+log_err() { echo -e "  ${CROSS} ${*}${reset}"; }
+
 die() {
 	local msg=$1
 	shift
-	printf "  %b %s\\n" "${CROSS}" "${red}${msg}${reset}"
+	#printf "  %b %s\\n" "${CROSS}" "${red}${msg}${reset}"
+	echo -e "  ${CROSS} ${red}${msg}${reset}"
+  sh_restoring_lock
 	exit 1
 }
 
@@ -57,13 +63,21 @@ sh_load_optdepends() {
 	fi
 }
 
+sh_restoring_lock() {
+  msg "Restauring pacman lock: /var/lib/pacman/db.lck"
+  touch /var/lib/pacman/db.lck &>/dev/null
+}
+
 sh_check_package_exist() {
 	local pkg
 	for pkg in "${OPTDEPENDS[@]}"; do
-		if ! pacman -Ss "^$pkg$"; then
-			die "Fatal: package '$pkg' not exist"
+    if ! pacman -Qs "$pkg" &>/dev/null; then
+  		if ! pacman -Ss "^$pkg$" &>/dev/null; then
+	  	  die "Fatal: package '$pkg' not exist in repo"
+		  fi
 		fi
-	done
+    log_ok "Check: ${cyan}$pkg"
+  done
 }
 
 sh_start_dbus_in_chroot() {
@@ -211,7 +225,7 @@ EOF
 	for service in "${servicesToDisable[@]}"; do
 		if systemctl is-active --quiet "${service}"; then
 			msg "Disabling service ${service}..."
-			if ! systemctl disable ${service} &>/dev/null; then
+			if ! systemctl disable "${service}" &>/dev/null; then
 				msg "${red}Error: It went wrong when desactivating service ${service}"
 			fi
 		else
@@ -225,7 +239,7 @@ EOF
 			msg "${green}Service ${service} is already active..."
 			continue
 		else
-			if ! systemctl enable ${service} &>/dev/null; then
+			if ! systemctl enable "${service}" &>/dev/null; then
 				msg "${red}Error: It went wrong when activating service ${service}"
 			fi
 		fi
@@ -248,8 +262,8 @@ EOF
 		update-grub &>/dev/null
 	fi
 
-	msg "Restauring pacman lock: /var/lib/pacman/db.lck"
-	touch /var/lib/pacman/db.lck &>/dev/null
+  # Restauring pacman lock: /var/lib/pacman/db.lck
+  sh_restoring_lock
 
 	if ! $IS_UPGRADE; then
 		msg "Installation complete. Rebooting in 10 seconds..."
