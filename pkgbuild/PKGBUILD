@@ -102,8 +102,8 @@ optdepends=(
 	#light
 	##perl-linux-desktopfiles
 	#sound-theme-freedesktop
-	#zsh
-	#zsh-completions
+	zsh
+	zsh-completions
 	#glxinfo
 	#libnotify
 	#libsndfile
