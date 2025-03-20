@@ -14,9 +14,10 @@ depends=(
 	openbox
 )
 optdepends=(
-	lightdm
-	lightdm-slick-greeter
-	lightdm-settings
+	lxdm
+	#lightdm
+	#lightdm-slick-greeter
+	#lightdm-settings
 	base-devel
 	openbox-themes
 	openbox-fonts
