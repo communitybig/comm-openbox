@@ -65,6 +65,9 @@ optdepends=(
  grub-btrfs
  snappy
  yad
+ svt-av1
+ zafiro-icon-theme
+ 
  #XFCE
  xfce-polkit
  xfce4-notifyd
@@ -233,6 +236,7 @@ package() {
 	cp -r "$srcdir"/nitrogen 				"$_configdir"
 	cp -r "$srcdir"/obmenu-generator 		"$_configdir"
 	cp -r "$srcdir"/plank 					"$_configdir"
+	cp -r "$srcdir"/picom 					"$_configdir"
 
 	# Copy window manager configs
 	install -Dm 755 autostart   			"$_obdir"/autostart
