@@ -16,6 +16,10 @@ depends=(
 )
 optdepends=(
  base-devel
+ # Login
+ lightdm
+ lightdm-slick-greeter
+ lightdm-settings 
  openbox-themes
  openbox-fonts
  comm-wallpapers-openbox
@@ -67,7 +71,6 @@ optdepends=(
  yad
  svt-av1
  zafiro-icon-theme
- 
  #XFCE
  xfce-polkit
  xfce4-notifyd
@@ -76,10 +79,6 @@ optdepends=(
  xfce4-terminal
  # PolicyKit authentication
  polkit
- # Login
- lightdm
- lightdm-slick-greeter
- lightdm-settings
  #Sound
  mpc
  mpd

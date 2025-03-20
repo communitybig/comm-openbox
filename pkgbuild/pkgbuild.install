@@ -173,13 +173,6 @@ EOF
 			msg "${red}Error: It went wrong when activating ${DM^}"
 		fi
 	fi
-	#Enable mpd
-	if ! $IS_UPGRADE; then
-		msg "Enabling MPD..."
-		if ! systemctl enable mpd &>/dev/null; then
-			msg "${red}Error: It went wrong when activating mpd"
-		fi
-	fi	
 
 	if ! $IN_CHROOT_INSTALLER; then
 		if ! $IS_UPGRADE; then
