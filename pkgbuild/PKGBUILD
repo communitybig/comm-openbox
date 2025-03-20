@@ -13,12 +13,12 @@ source=("git+${url}.git")
 md5sums=('SKIP')
 depends=(
  openbox
+ lightdm
+ lightdm-slick-greeter
+ lightdm-settings 
 )
 optdepends=(
  base-devel
- lightdm
- lightdm-slick-greeter
- lightdm-settings
  openbox-themes
  openbox-fonts
  comm-wallpapers-openbox
