@@ -76,19 +76,19 @@ optdepends=(
 	xfce4-settings
 	xfce4-terminal
 	## PolicyKit authentication
-	#polkit
+	polkit
 	##Sound
-	#mpc
-	#mpd
-	#pulsemixer
-	#pipewire
-	#pipewire-pulse
-	#volume_key
+	mpc
+	mpd
+	pulsemixer
+	pipewire
+	pipewire-pulse
+	volume_key
 	## Extras
-	#autoconf
-	#automake
-	#paprefs
-	#viewnior
+	autoconf
+	automake
+	paprefs
+	viewnior
 	network-manager-applet
 	network-manager-sstp
 	networkmanager
