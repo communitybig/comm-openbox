@@ -68,7 +68,7 @@ optdepends=(
 	snappy
 	#yad
 	svt-av1
-	#zafiro-icon-theme
+	zafiro-icon-theme
 	##XFCE
 	xfce-polkit
 	xfce4-notifyd
