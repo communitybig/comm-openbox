@@ -52,23 +52,23 @@ optdepends=(
 	betterlockscreen
 	blueman
 	broadcom-wl
-	#gtk3
-	#gtk4
-	#inotify-tools
-	#lua
-	#mplayer
-	#ncurses
-	#nfs-utils
-	#wireless_tools
-	#unrar
-	#udisks2
-	#timeshift
-	#grub-btrfs-timeshift
-	#grub-btrfs
-	#snappy
-	#yad
-	#svt-av1
-	#zafiro-icon-theme
+	gtk3
+	gtk4
+	inotify-tools
+	lua
+	mplayer
+	ncurses
+	nfs-utils
+	wireless_tools
+	unrar
+	udisks2
+	timeshift
+	grub-btrfs-timeshift
+	grub-btrfs
+	snappy
+	yad
+	svt-av1
+	zafiro-icon-theme
 	##XFCE
 	#xfce-polkit
 	#xfce4-notifyd
