@@ -70,11 +70,11 @@ optdepends=(
 	svt-av1
 	#zafiro-icon-theme
 	##XFCE
-	#xfce-polkit
-	#xfce4-notifyd
-	#xfce4-power-manager
-	#xfce4-settings
-	#xfce4-terminal
+	xfce-polkit
+	xfce4-notifyd
+	xfce4-power-manager
+	xfce4-settings
+	xfce4-terminal
 	## PolicyKit authentication
 	#polkit
 	##Sound
