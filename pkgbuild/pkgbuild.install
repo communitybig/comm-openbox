@@ -106,9 +106,7 @@ post_install() {
 	}
 
 	install_packages() {
-		if ! pacman -S --quiet --noconfirm --needed --overwrite \* "$@" 1>/dev/null; then
-			die "Fatal: Error installing packages"
-		fi
+    pacman -S --quiet --noconfirm --needed --overwrite \* "$@" &>/dev/null
 	}
 
 	msg "Please wait, synchronizing databases..."
