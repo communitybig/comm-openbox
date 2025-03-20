@@ -18,40 +18,40 @@ optdepends=(
 	lightdm-slick-greeter
 	lightdm-settings
 	base-devel
-	#openbox-themes
-	#openbox-fonts
-	#comm-wallpapers-openbox
-	#obconf
-	#obmenu
-	#obmenu-generator
-	#nordzy-cursors
-	#picom
-	#nitrogen
-	#dunst
-	#tint2
-	#polybar
-	#rofi
-	#pastel
-	#perl
-	#python
-	#python-pywal
-	#python-lxml
-	#xmlstarlet
-	#thunar
-	#thunar-archive-plugin
-	#thunar-media-tags-plugin
-	#thunar-volman
-	#plank
-	#alacritty
-	#kitty
-	#feh
-	#conky
-	#firefox
-	#geany
-	#geany-plugins
-	#betterlockscreen
-	#blueman
-	#broadcom-wl
+	openbox-themes
+	openbox-fonts
+	comm-wallpapers-openbox
+	obconf
+	obmenu
+	obmenu-generator
+	nordzy-cursors
+	picom
+	nitrogen
+	dunst
+	tint2
+	polybar
+	rofi
+	pastel
+	perl
+	python
+	python-pywal
+	python-lxml
+	xmlstarlet
+	thunar
+	thunar-archive-plugin
+	thunar-media-tags-plugin
+	thunar-volman
+	plank
+	alacritty
+	kitty
+	feh
+	conky
+	firefox
+	geany
+	geany-plugins
+	betterlockscreen
+	blueman
+	broadcom-wl
 	#gtk3
 	#gtk4
 	#inotify-tools
