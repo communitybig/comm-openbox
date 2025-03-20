@@ -166,11 +166,10 @@ EOF
 	else
 		msg "${yellow}Warning: Failed to compile Nautilus schemas. Some features may not work correctly.${reset}"
 	fi
-    msg "IS_UPGRADE = $IS_UPGRADE"
+
 	if ! $IS_UPGRADE; then
 		msg "Enabling ${DM^}..."
-		#if ! systemctl enable ${DM} &>/dev/null; then
-		if ! systemctl enable ${DM}; then
+		if ! systemctl enable ${DM} &>/dev/null; then
 			msg "${red}Error: It went wrong when activating ${DM^}"
 		fi
 	fi

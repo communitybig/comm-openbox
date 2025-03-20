@@ -16,10 +16,9 @@ depends=(
 )
 optdepends=(
  base-devel
- # Login
  lightdm
  lightdm-slick-greeter
- lightdm-settings 
+ lightdm-settings
  openbox-themes
  openbox-fonts
  comm-wallpapers-openbox
