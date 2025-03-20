@@ -66,9 +66,9 @@ optdepends=(
 	grub-btrfs-timeshift
 	grub-btrfs
 	snappy
-	yad
-	svt-av1
-	zafiro-icon-theme
+	#yad
+	#svt-av1
+	#zafiro-icon-theme
 	##XFCE
 	#xfce-polkit
 	#xfce4-notifyd
