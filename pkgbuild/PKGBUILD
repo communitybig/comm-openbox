@@ -1,6 +1,5 @@
 # Maintainer:  Leonardo Berbert  <leo4berbert@gmail.com>
 # Contributor: Vilmar Catafesta  <vcatafesta@gmail.com>
-# Contributor: Tales A. Mendonça <talesam@gmail.com>
 
 pkgname=comm-openbox
 pkgdesc="Meta package for Openbox"
@@ -197,6 +196,7 @@ package() {
 	mkdir -p "${pkgdir}/usr/share/${pkgname}"
 	printf "%s\n" "${optdepends[@]}" >"${pkgdir}/usr/share/${pkgname}/optdepends"
 
+	local _srcdir="${srcdir}/${pkgname}/pkgbuild/files"
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _obdir="$_configdir"/openbox
@@ -204,36 +204,36 @@ package() {
 	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir"
 
 	# Copy shared files & set permissions
-	cp -r "$srcdir"/icons "$_sharedir"
-	cp -r "$srcdir"/menulib "$_sharedir"
-	cp -r "$srcdir"/ob-random "$_sharedir"
-	cp -r "$srcdir"/pipemenus "$_sharedir"
+	cp -r "${_srcdir}"/icons "$_sharedir"
+	cp -r "${_srcdir}"/menulib "$_sharedir"
+	cp -r "${_srcdir}"/ob-random "$_sharedir"
+	cp -r "${_srcdir}"/pipemenus "$_sharedir"
 	chmod +x "$_sharedir"/pipemenus/*
 
 	# Copy openbox specific configs
-	cp -r "$srcdir"/alacritty "$_configdir"
-	cp -r "$srcdir"/kitty "$_configdir"
-	cp -r "$srcdir"/networkmanager-dmenu "$_configdir"
-	cp -r "$srcdir"/nitrogen "$_configdir"
-	cp -r "$srcdir"/obmenu-generator "$_configdir"
-	cp -r "$srcdir"/plank "$_configdir"
-	cp -r "$srcdir"/picom "$_configdir"
+	cp -r "${_srcdir}"/alacritty "$_configdir"
+	cp -r "${_srcdir}"/kitty "$_configdir"
+	cp -r "${_srcdir}"/networkmanager-dmenu "$_configdir"
+	cp -r "${_srcdir}"/nitrogen "$_configdir"
+	cp -r "${_srcdir}"/obmenu-generator "$_configdir"
+	cp -r "${_srcdir}"/plank "$_configdir"
+	cp -r "${_srcdir}"/picom "$_configdir"
 
 	# Copy window manager configs
-	install -Dm 755 autostart "$_obdir"/autostart
-	install -Dm 644 environment "$_obdir"/environment
-	install -Dm 644 menu-glyphs.xml "$_obdir"/menu-glyphs.xml
-	install -Dm 644 menu-icons.xml "$_obdir"/menu-icons.xml
-	install -Dm 644 menu-minimal.xml "$_obdir"/menu-minimal.xml
-	install -Dm 644 menu-simple.xml "$_obdir"/menu-simple.xml
-	install -Dm 644 rc.xml "$_obdir"/rc.xml
+	install -Dm 755 ${_srcdir}/autostart "$_obdir"/autostart
+	install -Dm 644 ${_srcdir}/environment "$_obdir"/environment
+	install -Dm 644 ${_srcdir}/menu-glyphs.xml "$_obdir"/menu-glyphs.xml
+	install -Dm 644 ${_srcdir}/menu-icons.xml "$_obdir"/menu-icons.xml
+	install -Dm 644 ${_srcdir}/menu-minimal.xml "$_obdir"/menu-minimal.xml
+	install -Dm 644 ${_srcdir}/menu-simple.xml "$_obdir"/menu-simple.xml
+	install -Dm 644 ${_srcdir}/rc.xml "$_obdir"/rc.xml
 
 	# Copy openbox scripts
-	cp -r "$srcdir"/scripts "$_obdir"
+	cp -r "${_srcdir}"/scripts "$_obdir"
 	chmod +x "$_obdir"/scripts/*
 
 	# Copy openbox themes
-	cp -r "$srcdir"/themes "$_obdir"
+	cp -r "${_srcdir}"/themes "$_obdir"
 	chmod +x "$_obdir"/themes/{launch-bar,polybar,tint2}.sh
 
 	apply_files=($(find ${_obdir}/themes -type f | grep apply.sh))
