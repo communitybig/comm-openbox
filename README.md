@@ -1,3 +1,3 @@
-# pkgbuild-template-meta-package
+# comm-openbox
 
-Template for meta packages
+Meta package for OpenBox
