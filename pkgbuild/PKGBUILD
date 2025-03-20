@@ -67,7 +67,7 @@ optdepends=(
 	grub-btrfs
 	snappy
 	#yad
-	#svt-av1
+	svt-av1
 	#zafiro-icon-theme
 	##XFCE
 	#xfce-polkit
