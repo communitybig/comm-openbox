@@ -98,10 +98,10 @@ optdepends=(
 	networkmanager-pptp
 	networkmanager-strongswan
 	networkmanager-vpnc
-	#perl-json-xs
+	perl-json-xs
 	light
 	##perl-linux-desktopfiles
-	#sound-theme-freedesktop
+	sound-theme-freedesktop
 	zsh
 	zsh-completions
 	glxinfo
