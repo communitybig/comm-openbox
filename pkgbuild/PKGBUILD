@@ -104,20 +104,20 @@ optdepends=(
 	#sound-theme-freedesktop
 	zsh
 	zsh-completions
-	#glxinfo
-	#libnotify
-	#libsndfile
-	#lib32-libsndfile
-	#xf86-input-elographics
-	#xf86-input-evdev
-	#xf86-input-libinput
-	#xf86-input-vmmouse
-	#xf86-input-void
-	#xdotool
-	#xclip
-	#xcolor
-	#imagemagick
-	#ethtool
+	glxinfo
+	libnotify
+	libsndfile
+	lib32-libsndfile
+	xf86-input-elographics
+	xf86-input-evdev
+	xf86-input-libinput
+	xf86-input-vmmouse
+	xf86-input-void
+	xdotool
+	xclip
+	xcolor
+	imagemagick
+	ethtool
 	ffmpeg
 	egl-x11
 	xorg-bdftopcf
