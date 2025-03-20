@@ -66,9 +66,9 @@ optdepends=(
 	grub-btrfs-timeshift
 	grub-btrfs
 	snappy
-	#yad
+	yad
 	svt-av1
-	zafiro-icon-theme
+	#zafiro-icon-theme
 	##XFCE
 	xfce-polkit
 	xfce4-notifyd
@@ -101,7 +101,7 @@ optdepends=(
 	perl-json-xs
 	light
 	##perl-linux-desktopfiles
-	sound-theme-freedesktop
+	#sound-theme-freedesktop
 	zsh
 	zsh-completions
 	glxinfo
