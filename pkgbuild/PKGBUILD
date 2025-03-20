@@ -89,15 +89,15 @@ optdepends=(
 	#automake
 	#paprefs
 	#viewnior
-	#network-manager-applet
-	#network-manager-sstp
-	#networkmanager
-	#networkmanager-dmenu-git
-	#networkmanager-openconnect
-	#networkmanager-openvpn
-	#networkmanager-pptp
-	#networkmanager-strongswan
-	#networkmanager-vpnc
+	network-manager-applet
+	network-manager-sstp
+	networkmanager
+	networkmanager-dmenu-git
+	networkmanager-openconnect
+	networkmanager-openvpn
+	networkmanager-pptp
+	networkmanager-strongswan
+	networkmanager-vpnc
 	#perl-json-xs
 	#light
 	##perl-linux-desktopfiles
