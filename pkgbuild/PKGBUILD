@@ -13,11 +13,11 @@ source=("git+${url}.git")
 md5sums=('SKIP')
 depends=(
  openbox
+)
+optdepends=(
  lightdm
  lightdm-slick-greeter
  lightdm-settings 
-)
-optdepends=(
  base-devel
  openbox-themes
  openbox-fonts
@@ -120,7 +120,6 @@ optdepends=(
  imagemagick
  ethtool
  ffmpeg
- # X11 Server and components
  egl-x11
  xorg-bdftopcf
  xorg-docs
