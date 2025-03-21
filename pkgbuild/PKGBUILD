@@ -200,7 +200,7 @@ package() {
 	local _userdir="$pkgdir"/etc/skel/.mpd
 	local _obdir="$_configdir"/openbox
 
-	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir"
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_userdir"
 
 	# Copy shared files & set permissions
 	cp -r "${_srcdir}"/icons "$_sharedir"
@@ -229,7 +229,7 @@ package() {
 	install -Dm 644 ${_srcdir}/rc.xml "$_obdir"/rc.xml
 
 	# MPD CONFIG
-	
+
     touch "${_configdir}/etc/skel/.mpd/mpd.db"
     touch "${_configdir}/etc/skel/.mpd/mpd.log"
     touch "${_configdir}/etc/skel/.mpd/mpd.pid"
