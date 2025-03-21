@@ -18,13 +18,12 @@ optdepends=(
 	lightdm-slick-greeter
 	lightdm-settings
 	base-devel
-	openbox-themes
+	#openbox-themes
 	openbox-fonts
 	comm-wallpapers-openbox
 	obconf
 	obmenu
 	obmenu-generator
-	nordzy-cursors
 	picom
 	nitrogen
 	dunst
@@ -69,6 +68,9 @@ optdepends=(
 	yad
 	svt-av1
 	zafiro-icon-theme
+	nordic-darker-theme
+	nordzy-cursors
+	ranger
 	##XFCE
 	xfce-polkit
 	xfce4-notifyd
@@ -210,7 +212,7 @@ package() {
 	chmod +x "$_sharedir"/pipemenus/*
 
 	# Copy openbox specific configs
-	cp -r "${_srcdir}"/.mpd "$_userdir"
+	cp -r "${_srcdir}"/.mpd/. "$_userdir"
 	cp -r "${_srcdir}"/alacritty "$_configdir"
 	cp -r "${_srcdir}"/kitty "$_configdir"
 	cp -r "${_srcdir}"/networkmanager-dmenu "$_configdir"
@@ -230,10 +232,10 @@ package() {
 
 	# MPD CONFIG
 
-    touch "${_configdir}/etc/skel/.mpd/mpd.db"
-    touch "${_configdir}/etc/skel/.mpd/mpd.log"
-    touch "${_configdir}/etc/skel/.mpd/mpd.pid"
-    touch "${_configdir}/etc/skel/.mpd/mpdstate"
+	touch "${_userdir}/mpd.db"
+	touch "${_userdir}/mpd.log"
+	touch "${_userdir}/mpd.pid"
+	touch "${_userdir}/mpdstate"
 
 	# Copy openbox scripts
 	cp -r "${_srcdir}"/scripts "$_obdir"
