@@ -197,6 +197,7 @@ package() {
 	local _srcdir="${srcdir}/${pkgname}/pkgbuild/files"
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
+	local _userdir="$pkgdir"/etc/skel/.mpd
 	local _obdir="$_configdir"/openbox
 
 	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir"
@@ -209,6 +210,7 @@ package() {
 	chmod +x "$_sharedir"/pipemenus/*
 
 	# Copy openbox specific configs
+	cp -r "${_srcdir}"/.mpd "$_userdir"
 	cp -r "${_srcdir}"/alacritty "$_configdir"
 	cp -r "${_srcdir}"/kitty "$_configdir"
 	cp -r "${_srcdir}"/networkmanager-dmenu "$_configdir"
@@ -225,6 +227,13 @@ package() {
 	install -Dm 644 ${_srcdir}/menu-minimal.xml "$_obdir"/menu-minimal.xml
 	install -Dm 644 ${_srcdir}/menu-simple.xml "$_obdir"/menu-simple.xml
 	install -Dm 644 ${_srcdir}/rc.xml "$_obdir"/rc.xml
+
+	# MPD CONFIG
+	
+    touch "${_configdir}/etc/skel/.mpd/mpd.db"
+    touch "${_configdir}/etc/skel/.mpd/mpd.log"
+    touch "${_configdir}/etc/skel/.mpd/mpd.pid"
+    touch "${_configdir}/etc/skel/.mpd/mpdstate"
 
 	# Copy openbox scripts
 	cp -r "${_srcdir}"/scripts "$_obdir"
