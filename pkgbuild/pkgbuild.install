@@ -33,7 +33,7 @@ declare DM='lightdm'
 declare WM='openbox'
 declare pkgname=comm-"${WM}"
 declare servicesToEnable=("${DM}" mpd sshd bluetooth)
-declare servicesToDisable=(lxdm sddm gdm)
+declare servicesToDisable=()
 
 msg() {
 	local msg="$1"
