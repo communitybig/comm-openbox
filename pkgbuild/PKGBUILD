@@ -199,10 +199,11 @@ package() {
 	local _srcdir="${srcdir}/${pkgname}/pkgbuild/files"
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
-	local _userdir="$pkgdir"/etc/skel/.mpd
+	local _mpddir="$pkgdir"/etc/skel/.mpd
+	local _iconsdir="$pkgdir"/etc/skel/.icons
 	local _obdir="$_configdir"/openbox
 
-	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_userdir"
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_mpddir" && mkdir -p "$_iconsdir" 
 
 	# Copy shared files & set permissions
 	cp -r "${_srcdir}"/icons "$_sharedir"
@@ -212,7 +213,8 @@ package() {
 	chmod +x "$_sharedir"/pipemenus/*
 
 	# Copy openbox specific configs
-	cp -r "${_srcdir}"/.mpd/. "$_userdir"
+	cp -r "${_srcdir}"/.mpd/. "$_mpddir"
+	cp -r "${_srcdir}"/.icons/. "$_iconsdir"
 	cp -r "${_srcdir}"/alacritty "$_configdir"
 	cp -r "${_srcdir}"/kitty "$_configdir"
 	cp -r "${_srcdir}"/networkmanager-dmenu "$_configdir"
@@ -221,6 +223,7 @@ package() {
 	cp -r "${_srcdir}"/plank "$_configdir"
 	cp -r "${_srcdir}"/picom "$_configdir"
 	cp -r "${_srcdir}"/xfce4 "$_configdir"
+	cp -r "${_srcdir}"/gtk-3.0 "$_configdir"
 
 	# Copy window manager configs
 	install -Dm 755 ${_srcdir}/autostart "$_obdir"/autostart
@@ -233,10 +236,10 @@ package() {
 
 	# MPD CONFIG
 
-	touch "${_userdir}/mpd.db"
-	touch "${_userdir}/mpd.log"
-	touch "${_userdir}/mpd.pid"
-	touch "${_userdir}/mpdstate"
+	touch "${_mpddir}/mpd.db"
+	touch "${_mpddir}/mpd.log"
+	touch "${_mpddir}/mpd.pid"
+	touch "${_mpddir}/mpdstate"
 
 	# Copy openbox scripts
 	cp -r "${_srcdir}"/scripts "$_obdir"
