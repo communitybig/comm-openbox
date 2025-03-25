@@ -8,7 +8,7 @@
 <!--	<separator label="Main Menu"/>  -->
 		<item label=" Terminal Emulator">
 			<action name="Execute">
-				<command>alacritty</command>
+				<command>kitty</command>
 			</action>
 		</item>
 		<item label=" File Manager">
