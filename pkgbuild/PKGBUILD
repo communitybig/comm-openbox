@@ -220,6 +220,7 @@ package() {
 	cp -r "${_srcdir}"/obmenu-generator "$_configdir"
 	cp -r "${_srcdir}"/plank "$_configdir"
 	cp -r "${_srcdir}"/picom "$_configdir"
+	cp -r "${_srcdir}"/xfce4 "$_configdir"
 
 	# Copy window manager configs
 	install -Dm 755 ${_srcdir}/autostart "$_obdir"/autostart
