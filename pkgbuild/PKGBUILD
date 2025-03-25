@@ -28,6 +28,9 @@ optdepends=(
 	nitrogen
 	dunst
 	tint2
+	meld
+	cmatrix
+	oh-my-posh-bin
 	polybar
 	rofi
 	pastel
@@ -55,7 +58,7 @@ optdepends=(
 	gtk4
 	inotify-tools
 	lua
-	mplayer
+	g4music
 	ncurses
 	nfs-utils
 	wireless_tools
@@ -86,6 +89,7 @@ optdepends=(
 	pipewire
 	pipewire-pulse
 	volume_key
+	pavucontrol
 	## Extras
 	autoconf
 	automake
@@ -171,6 +175,11 @@ optdepends=(
 	xorg-xwininfo
 	xorg-xwud
 	xorgproto
+    inotify-tools
+    inxi
+    libavif
+    lsof
+    sysstat	
 	## Nerd Fonts
 	##ttf-fira-sans
 	##ttf-fira-code
@@ -224,6 +233,8 @@ package() {
 	cp -r "${_srcdir}"/picom "$_configdir"
 	cp -r "${_srcdir}"/xfce4 "$_configdir"
 	cp -r "${_srcdir}"/gtk-3.0 "$_configdir"
+	cp -r "${_srcdir}"/bashrc "$_configdir"
+	cp -r "${_srcdir}"/ohmyposh "$_configdir"
 
 	# Copy window manager configs
 	install -Dm 755 ${_srcdir}/autostart "$_obdir"/autostart
