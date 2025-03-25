@@ -68,10 +68,6 @@ sh_restoring_lock() {
   touch /var/lib/pacman/db.lck &>/dev/null
 }
 
-sh_cache_fonts(){
-	  msg "Caching fonts..."
-  	  fc-cache -f -v &>/dev/null
-}
 sh_check_package_exist() {
 	local pkg
 	for pkg in "${OPTDEPENDS[@]}"; do
@@ -268,8 +264,7 @@ EOF
 
   # Restauring pacman lock: /var/lib/pacman/db.lck
   sh_restoring_lock
-  # Caching fonts
-  sh_cache_fonts
+  
 	if ! $IS_UPGRADE; then
 		msg "Installation complete. Rebooting in 10 seconds..."
 		# Countdown before reboot
