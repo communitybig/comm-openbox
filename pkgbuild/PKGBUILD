@@ -28,7 +28,6 @@ optdepends=(
 	nitrogen
 	dunst
 	tint2
-	meld
 	cmatrix
 	oh-my-posh-bin
 	polybar

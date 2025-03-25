@@ -2,6 +2,8 @@
 
 ## Copyright (C) 2020-2024 Aditya Shakya <adi1090x@gmail.com>
 
+wal -i /usr/share/backgrounds/community/ob_008.jpg --vte &
+
 ## Kill if already running
 killall -9 xfsettingsd picom polybar mpd dunst ksuperkey xfce4-power-manager
 
@@ -50,4 +52,6 @@ nm-applet --indicator &
 ## User Friendly Bluetooth Menu
 blueman-applet &
 
-#sed -i -e '/## Welcome-App-Run-Once/Q' "$HOME"/.config/openbox/autostart
+## PyWal
+
+wal -i /usr/share/backgrounds/community/ob_008.jpg --vte
