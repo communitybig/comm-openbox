@@ -82,8 +82,8 @@ optdepends=(
 	## PolicyKit authentication
 	polkit
 	##Sound
-	mpc
-	mpd
+	#mpc
+	#mpd
 	pulsemixer
 	pipewire
 	pipewire-pulse
@@ -180,17 +180,18 @@ optdepends=(
     lsof
     sysstat	
 	## Nerd Fonts
-	##ttf-fira-sans
-	##ttf-fira-code
-	##ttf-firacode-nerd
-	##ttf-dejavu
-	##ttf-nerd-fonts-symbols-with-biglinux
-	##ttf-jetbrains-mono
-	##ttf-dejavu
-	##ttf-liberation
-	##ttf-nerd-fonts-symbols
-	##ttf-nerd-fonts-symbols-common
-	##ttf-nerd-fonts-symbols-mono
+	ttf-fira-sans
+	ttf-fira-code
+	ttf-firacode-nerd
+	ttf-dejavu
+	ttf-nerd-fonts-symbols-with-biglinux
+	ttf-jetbrains-mono
+	ttf-dejavu
+	ttf-liberation
+	ttf-nerd-fonts-symbols
+	ttf-nerd-fonts-symbols-common
+	ttf-nerd-fonts-symbols-mono
+	ttf-hack-nerd
 )
 
 # Automatically detect and use the correct install file
@@ -207,11 +208,13 @@ package() {
 	local _srcdir="${srcdir}/${pkgname}/pkgbuild/files"
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
-	local _mpddir="$pkgdir"/etc/skel/.mpd
+	local _configglobal="$pkgdir"/etc
+	#local _mpddir="$pkgdir"/etc/skel/.mpd
 	local _iconsdir="$pkgdir"/etc/skel/.icons
 	local _obdir="$_configdir"/openbox
 
-	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_mpddir" && mkdir -p "$_iconsdir" 
+	#mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_mpddir" && mkdir -p "$_iconsdir"
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mdir -p "$_configglobal" 
 
 	# Copy shared files & set permissions
 	cp -r "${_srcdir}"/icons "$_sharedir"
@@ -219,9 +222,12 @@ package() {
 	cp -r "${_srcdir}"/ob-random "$_sharedir"
 	cp -r "${_srcdir}"/pipemenus "$_sharedir"
 	chmod +x "$_sharedir"/pipemenus/*
+	
+	# copy etc files
+	cp -r "${_srcdir}"/lightdm "$_configglobal"
 
 	# Copy openbox specific configs
-	cp -r "${_srcdir}"/.mpd/. "$_mpddir"
+	#cp -r "${_srcdir}"/.mpd/. "$_mpddir"
 	cp -r "${_srcdir}"/.icons/. "$_iconsdir"
 	cp -r "${_srcdir}"/alacritty "$_configdir"
 	cp -r "${_srcdir}"/kitty "$_configdir"
@@ -234,6 +240,7 @@ package() {
 	cp -r "${_srcdir}"/gtk-3.0 "$_configdir"
 	cp -r "${_srcdir}"/gtk-4.0 "$_configdir"
 	cp -r "${_srcdir}"/bashrc "$_configdir"
+	cp -r "${_srcdir}"/.bashrc.pacnew "$_configdir"
 	cp -r "${_srcdir}"/ohmyposh "$_configdir"
 
 	# Copy window manager configs
@@ -247,10 +254,10 @@ package() {
 
 	# MPD CONFIG
 
-	touch "${_mpddir}/mpd.db"
-	touch "${_mpddir}/mpd.log"
-	touch "${_mpddir}/mpd.pid"
-	touch "${_mpddir}/mpdstate"
+	#touch "${_mpddir}/mpd.db"
+	#touch "${_mpddir}/mpd.log"
+	#touch "${_mpddir}/mpd.pid"
+	#touch "${_mpddir}/mpdstate"
 
 	# Copy openbox scripts
 	cp -r "${_srcdir}"/scripts "$_obdir"

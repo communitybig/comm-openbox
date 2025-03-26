@@ -32,7 +32,7 @@ declare IS_UPGRADE=false
 declare DM='lightdm'
 declare WM='openbox'
 declare pkgname=comm-"${WM}"
-declare servicesToEnable=("${DM}" mpd sshd bluetooth)
+declare servicesToEnable=("${DM}" sshd bluetooth)
 declare servicesToDisable=()
 
 msg() {
@@ -219,6 +219,17 @@ EOF
 
 	msg "Setting user folder permissions in ${user_home}"
 	chown -R "$user:$user" "$user_home" &>/dev/null
+
+	#Change lightdm config
+	if [[ -f /etc/lightdm/slick-greeter.conf ]]; then
+		msg "Existing /etc/lightdm/slick-greeter.conf found. Creating a backup at /etc/lightdm/slick-greeter.conf.bak .."
+		mv -f /etc/lightdm/slick-greeter.conf /etc/lightdm/slick-greeter.conf.bak >/dev/null
+		msg "Applying new lightdm configuration..."
+		mv -f /etc/lightdm/slick-greeter.conf.pacnew /etc/lightdm/slick-greeter.conf >/dev/null
+	elif [[ -f /etc/lightdm/slick-greeter.conf.pacnew ]]; then
+		msg "No existing lightdm configuration found. Using default settings..."
+		mv -f /etc/lightdm/slick-greeter.conf.pacnew /etc/lightdm/slick-greeter.conf >/dev/null
+	fi
 
 	# Apply wallpaper using Pywal
 
