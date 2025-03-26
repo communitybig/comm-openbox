@@ -125,7 +125,7 @@ post_install() {
 	)
 
 	synchronizing_database() {
-		pacman -Sy --quiet --noconfirm &>/dev/null
+		pacman -Syu --quiet --noconfirm &>/dev/null
 	}
 
 	install_packages() {
@@ -159,9 +159,10 @@ post_install() {
 		install_packages "$KERNEL_PACKAGE" nvidia-utils nvidia-settings
 
 		msg "Blacklisting Nouveau..."
-		cat <<EOF | tee /etc/modprobe.d/nouveau.conf /etc/modprobe.d/blacklist.conf
-blacklist nouveau
-install nouveau /bin/true
+		{ 
+		echo -e "blacklist nouveau\ninstall nouveau /bin/true" > /etc/modprobe.d/nouveau.conf
+		echo -e "blacklist nouveau\ninstall nouveau /bin/true" > /etc/modprobe.d/blacklist.conf
+		} >/dev/null 2>&1
 EOF
 	elif grep -qiw "Intel" <<<"$GPU_INFO"; then
 		msg "Intel GPU detected! Installing drivers..."
@@ -203,8 +204,30 @@ EOF
 	mkdir -p "$user_home" &>/dev/null
 	cp -Rfpa /etc/skel/. "$user_home/" &>/dev/null
 
+	# Ensure necessary directories exist
+	mkdir -p "$user_home/.backup" "$user_home/.config" &>/dev/null
+	chown "$user:$user" "$user_home/.backup" "$user_home/.config" &>/dev/null
+	
+	for file in .bashrc; do
+		if [[ -e "$user_home/$file" ]] && [[ ! -L "$user_home/$file" ]]; then
+			msg "Backing up existing $file..."
+			mv "$user_home/$file" "$user_home/.backup/$file" >/dev/null
+		fi
+	done
+	mv -f "$user_home/.bashrc.pacnew" "$user_home/.bashrc" >/dev/null
+	chown -h "$user:$user" "$user_home/.bashrc" >/dev/null
+
 	msg "Setting user folder permissions in ${user_home}"
 	chown -R "$user:$user" "$user_home" &>/dev/null
+
+	# Apply wallpaper using Pywal
+
+	if command -v wal &>/dev/null; then
+		msg "Applying wallpaper using Pywal for user: $user"
+		sudo -u "$user" wal -i /usr/share/backgrounds/community/ob_008.jpg >/dev/null
+	else
+		msg "${yellow}Warning: 'wal' command not found. Skipping wallpaper setup.${reset}"
+	fi
 
 	if command -v nautilus >/dev/null; then
 		msg "Configuring Nautilus..."
@@ -279,6 +302,23 @@ EOF
 		msg "Upgrade complete."
 	fi
 	
+}
+
+post_remove() {
+	msg "Removing symlinks and restoring backups..."
+	user=$(awk -F: '$3 >= 1000 && $3 < 65000 { print $1; exit }' /etc/passwd)
+	user_home=$(getent passwd "$user" | cut -d: -f6)
+
+	# Restore home directory files
+	for file in .bashrc; do
+		if [[ -L "$user_home/$file" ]]; then
+			rm "$user_home/$file" >/dev/null
+			[[ -e "$user_home/.backup/$file" ]] && {
+				mv -f "$user_home/.backup/$file" "$user_home/$file"
+			}
+		fi
+	done
+	.bashrc
 }
 
 post_upgrade() {

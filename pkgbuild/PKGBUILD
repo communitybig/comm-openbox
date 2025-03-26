@@ -232,6 +232,7 @@ package() {
 	cp -r "${_srcdir}"/picom "$_configdir"
 	cp -r "${_srcdir}"/xfce4 "$_configdir"
 	cp -r "${_srcdir}"/gtk-3.0 "$_configdir"
+	cp -r "${_srcdir}"/gtk-4.0 "$_configdir"
 	cp -r "${_srcdir}"/bashrc "$_configdir"
 	cp -r "${_srcdir}"/ohmyposh "$_configdir"
 
