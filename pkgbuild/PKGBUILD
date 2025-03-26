@@ -214,7 +214,7 @@ package() {
 	local _obdir="$_configdir"/openbox
 
 	#mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_mpddir" && mkdir -p "$_iconsdir"
-	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mdir -p "$_configglobal" 
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mkdir -p "$_configglobal"
 
 	# Copy shared files & set permissions
 	cp -r "${_srcdir}"/icons "$_sharedir"
