@@ -27,6 +27,7 @@ optdepends=(
 	obmenu-generator
 	picom
 	nitrogen
+	meld
 	dunst
 	tint2
 	cmatrix

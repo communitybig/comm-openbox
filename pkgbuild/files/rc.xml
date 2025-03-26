@@ -669,7 +669,7 @@
     <!-- Apps -->
     <keybind key="W-Return">
       <action name="Execute">
-        <command>alacritty</command>
+        <command>kitty</command>
       </action>
     </keybind>
     <keybind key="W-S-Return">
@@ -736,17 +736,17 @@
     </keybind>
     <keybind key="C-A-v">
       <action name="Execute">
-        <command>alacritty -e vim</command>
+        <command>kitty -e vim</command>
       </action>
     </keybind>
     <keybind key="C-A-r">
       <action name="Execute">
-        <command>alacritty -e ranger</command>
+        <command>kitty -e ranger</command>
       </action>
     </keybind>
     <keybind key="C-A-h">
       <action name="Execute">
-        <command>alacritty -e htop</command>
+        <command>kitty -e htop</command>
       </action>
     </keybind>
     <!-- Misc -->
