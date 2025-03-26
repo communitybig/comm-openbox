@@ -214,7 +214,7 @@ EOF
 			mv "$user_home/$file" "$user_home/.backup/$file" >/dev/null
 		fi
 	done
-	mv -f "$user_home/.bashrc.pacnew" "$user_home/.bashrc" >/dev/null
+	mv -f "$user_home/.config/.bashrc.pacnew" "$user_home/.bashrc" &>/dev/null
 	chown -h "$user:$user" "$user_home/.bashrc" >/dev/null
 
 	msg "Setting user folder permissions in ${user_home}"
@@ -235,7 +235,7 @@ EOF
 
 	if command -v wal &>/dev/null; then
 		msg "Applying wallpaper using Pywal for user: $user"
-		sudo -u "$user" wal -i /usr/share/backgrounds/community/ob_008.jpg >/dev/null
+		sudo -u "$user" wal -i /usr/share/backgrounds/community/ob_008.jpg &>/dev/null
 	else
 		msg "${yellow}Warning: 'wal' command not found. Skipping wallpaper setup.${reset}"
 	fi

@@ -82,8 +82,6 @@ optdepends=(
 	## PolicyKit authentication
 	polkit
 	##Sound
-	#mpc
-	#mpd
 	pulsemixer
 	pipewire
 	pipewire-pulse
@@ -209,11 +207,9 @@ package() {
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _etcdir="$pkgdir"/etc
-	#local _mpddir="$pkgdir"/etc/skel/.mpd
 	local _iconsdir="$pkgdir"/etc/skel/.icons
 	local _obdir="$_configdir"/openbox
 
-	#mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_mpddir" && mkdir -p "$_iconsdir"
 	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mkdir -p "$_etcdir"
 
 	# Copy shared files & set permissions
@@ -227,7 +223,6 @@ package() {
 	cp -r "${_srcdir}"/lightdm "$_etcdir"
 
 	# Copy openbox specific configs
-	#cp -r "${_srcdir}"/.mpd/. "$_mpddir"
 	cp -r "${_srcdir}"/.icons/. "$_iconsdir"
 	cp -r "${_srcdir}"/alacritty "$_configdir"
 	cp -r "${_srcdir}"/kitty "$_configdir"
@@ -252,16 +247,6 @@ package() {
 	install -Dm 644 ${_srcdir}/menu-minimal.xml "$_obdir"/menu-minimal.xml
 	install -Dm 644 ${_srcdir}/menu-simple.xml "$_obdir"/menu-simple.xml
 	install -Dm 644 ${_srcdir}/rc.xml "$_obdir"/rc.xml
-
-	# Copy Bash Config
-	install -Dm 644 "${_srcdir}/.bashrc.pacnew" "$_configdir/.bashrc.pacnew"
-
-	# MPD CONFIG
-
-	#touch "${_mpddir}/mpd.db"
-	#touch "${_mpddir}/mpd.log"
-	#touch "${_mpddir}/mpd.pid"
-	#touch "${_mpddir}/mpdstate"
 
 	# Copy openbox scripts
 	cp -r "${_srcdir}"/scripts "$_obdir"
