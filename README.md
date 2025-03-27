@@ -1,7 +1,5 @@
 # comm-openbox
 
-# comm-openbox
-
 **comm-openbox** is a **CommunityBig** metapackage that provides a fully configured and ready-to-use **Openbox** environment.
 
 **Openbox** is a highly configurable, ultra-lightweight window manager — not a full desktop environment — built for speed and simplicity. It's especially well-suited for older or low-spec computers, as it consumes very few system resources while remaining fast, flexible, and visually elegant when properly themed.
