@@ -235,7 +235,7 @@ EOF
 
 	if command -v wal &>/dev/null; then
 		msg "Applying wallpaper using Pywal for user: $user"
-		sudo -u "$user" wal -i /usr/share/backgrounds/community/ob_008.jpg &>/dev/null
+		sudo -u "$user" wal -i /usr/share/backgrounds/community/ob_014.jpg &>/dev/null
 	else
 		msg "${yellow}Warning: 'wal' command not found. Skipping wallpaper setup.${reset}"
 	fi
