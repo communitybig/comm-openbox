@@ -49,7 +49,3 @@ nm-applet --indicator &
 
 ## User Friendly Bluetooth Menu
 blueman-applet &
-
-## PyWal
-
-wal -i /usr/share/backgrounds/community/ob_008.jpg --vte
