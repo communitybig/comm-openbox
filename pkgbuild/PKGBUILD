@@ -212,11 +212,11 @@ package() {
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _etcdir="$pkgdir"/etc
-	local _usrdir="$pkgdir"/usr
+	#local _usrdir="$pkgdir"/usr
 	local _iconsdir="$pkgdir"/etc/skel/.icons
 	local _obdir="$_configdir"/openbox
 
-	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mkdir -p "$_etcdir" && mkdir -p "$_usrdir" 
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mkdir -p "$_etcdir" #&& mkdir -p "$_usrdir" 
 
 	# Copy shared files & set permissions
 	cp -r "${_srcdir}"/icons "$_sharedir"
@@ -226,7 +226,7 @@ package() {
 	chmod +x "$_sharedir"/pipemenus/*
 
 	# copy usr files
-	cp -r "${_rootdir}/usr" "${pkgdir}/"
+	#cp -r "${_rootdir}/usr" "${pkgdir}/"
 
 	# copy etc files
 	cp -r "${_srcdir}"/lightdm "$_etcdir"
