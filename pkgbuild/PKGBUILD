@@ -241,7 +241,7 @@ package() {
 	cp -r "${_srcdir}"/gtk-4.0 "$_configdir"
 	cp -r "${_srcdir}"/bashrc "$_configdir"
 	cp -r "${_srcdir}"/ohmyposh "$_configdir"
-	cp -r "${_srcdir}"/user-dirs.dirs "$_configdir"
+	
 	# Copy Config
 	install -Dm 644 "${_srcdir}/.bashrc.pacnew" "$_configdir/.bashrc.pacnew"	
 	#

@@ -8,8 +8,3 @@
 export TERMINAL=kitty
 export EDITOR=nano
 export PATH="/usr/lib/ccache/bin/:$PATH"
-
-# Load XDG user dirs (Desktop, Downloads, Pictures, etc.)
-if [ -f "$HOME/.config/user-dirs.dirs" ]; then
-  export $(grep -E '^XDG_.*_DIR=' "$HOME/.config/user-dirs.dirs" | xargs)
-fi
