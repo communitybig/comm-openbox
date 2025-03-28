@@ -17,8 +17,8 @@ optdepends=(
 	lightdm
 	lightdm-slick-greeter
 	lightdm-settings
-	comm-improve-compatibility
 	base-devel
+	comm-improve-compatibility
 	eza
 	openbox-themes
 	openbox-fonts
@@ -208,15 +208,13 @@ package() {
 	printf "%s\n" "${optdepends[@]}" >"${pkgdir}/usr/share/${pkgname}/optdepends"
 
 	local _srcdir="${srcdir}/${pkgname}/pkgbuild/files"
-	local _rootdir="${srcdir}/${pkgname}"
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _etcdir="$pkgdir"/etc
-	#local _usrdir="$pkgdir"/usr
 	local _iconsdir="$pkgdir"/etc/skel/.icons
 	local _obdir="$_configdir"/openbox
 
-	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mkdir -p "$_etcdir" #&& mkdir -p "$_usrdir" 
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mkdir -p "$_etcdir"
 
 	# Copy shared files & set permissions
 	cp -r "${_srcdir}"/icons "$_sharedir"
@@ -224,10 +222,7 @@ package() {
 	cp -r "${_srcdir}"/ob-random "$_sharedir"
 	cp -r "${_srcdir}"/pipemenus "$_sharedir"
 	chmod +x "$_sharedir"/pipemenus/*
-
-	# copy usr files
-	#cp -r "${_rootdir}/usr" "${pkgdir}/"
-
+	
 	# copy etc files
 	cp -r "${_srcdir}"/lightdm "$_etcdir"
 
