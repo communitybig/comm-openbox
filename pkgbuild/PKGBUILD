@@ -226,7 +226,7 @@ package() {
 	chmod +x "$_sharedir"/pipemenus/*
 
 	# copy usr files
-	cp -r "${_rootdir}"/usr "$_usrdir"
+	cp -r "${_rootdir}/usr" "${pkgdir}/"
 
 	# copy etc files
 	cp -r "${_srcdir}"/lightdm "$_etcdir"
