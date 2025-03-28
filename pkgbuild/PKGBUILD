@@ -17,6 +17,7 @@ optdepends=(
 	lightdm
 	lightdm-slick-greeter
 	lightdm-settings
+	comm-improve-compatibility
 	base-devel
 	eza
 	openbox-themes
@@ -207,13 +208,15 @@ package() {
 	printf "%s\n" "${optdepends[@]}" >"${pkgdir}/usr/share/${pkgname}/optdepends"
 
 	local _srcdir="${srcdir}/${pkgname}/pkgbuild/files"
+	local _rootdir="${srcdir}/${pkgname}"
 	local _sharedir="$pkgdir"/usr/share/archcraft/openbox
 	local _configdir="$pkgdir"/etc/skel/.config
 	local _etcdir="$pkgdir"/etc
+	local _usrdir="$pkgdir"/usr
 	local _iconsdir="$pkgdir"/etc/skel/.icons
 	local _obdir="$_configdir"/openbox
 
-	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mkdir -p "$_etcdir"
+	mkdir -p "$_sharedir" && mkdir -p "$_configdir" && mkdir -p "$_obdir" && mkdir -p "$_iconsdir" && mkdir -p "$_etcdir" && mkdir -p "$_usrdir" 
 
 	# Copy shared files & set permissions
 	cp -r "${_srcdir}"/icons "$_sharedir"
@@ -221,7 +224,10 @@ package() {
 	cp -r "${_srcdir}"/ob-random "$_sharedir"
 	cp -r "${_srcdir}"/pipemenus "$_sharedir"
 	chmod +x "$_sharedir"/pipemenus/*
-	
+
+	# copy usr files
+	cp -r "${_rootdir}"/usr "$_usrdir"
+
 	# copy etc files
 	cp -r "${_srcdir}"/lightdm "$_etcdir"
 
@@ -273,25 +279,4 @@ package() {
 	for _script in "${scripts_dir[@]}"; do
 		chmod +x ${_script}/*
 	done
-
-	cd "${srcdir}"
-
-	# Copy the structure of /etc, /usr and /opt to /usr/share/${pkgname}
-
-	local dirs=("usr" "etc" "opt")
-	for dir in "${dirs[@]}"; do
-		if [ -d "${srcdir}/${dir}" ]; then
-			cp -a "${srcdir}/${dir}" "${pkgdir}/usr/share/${pkgname}/"
-		fi
-	done
-	
-	# Install license file if present
-	if [ -f "LICENSE" ]; then
-		install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-	fi
-
-	# Install documentation if present
-	if [ -f "README.md" ]; then
-		install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
-	fi
 }
