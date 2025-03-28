@@ -297,7 +297,7 @@ EOF
 	fi
 
   # Restauring pacman lock: /var/lib/pacman/db.lck
-  sh_restoring_lock
+  #sh_restoring_lock
   
 	if ! $IS_UPGRADE; then
 		msg "Installation complete. Rebooting in 10 seconds..."
