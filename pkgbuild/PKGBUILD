@@ -274,16 +274,17 @@ package() {
 		chmod +x ${_script}/*
 	done
 
-	cd "${srcdir}/${pkgname}"
+	cd "${srcdir}"
 
 	# Copy the structure of /etc, /usr and /opt to /usr/share/${pkgname}
 
 	local dirs=("usr" "etc" "opt")
 	for dir in "${dirs[@]}"; do
-		if [ -d "${srcdir}/${pkgname}/${dir}" ]; then
-			cp -a "${srcdir}/${pkgname}/${dir}" "${pkgdir}/usr/share/${pkgname}/"
+		if [ -d "${srcdir}/${dir}" ]; then
+			cp -a "${srcdir}/${dir}" "${pkgdir}/usr/share/${pkgname}/"
 		fi
 	done
+	
 	# Install license file if present
 	if [ -f "LICENSE" ]; then
 		install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
