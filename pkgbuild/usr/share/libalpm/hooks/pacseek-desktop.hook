@@ -1,0 +1,12 @@
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = comm-openbox
+Target = pacseek
+
+[Action]
+Description = Adjust Pacseek to use Kitty instead of default terminal
+When = PostTransaction
+Exec = /usr/bin/sed -i 's/Terminal=true/Terminal=false/g' /usr/share/applications/org.moson.pacseek.desktop
+NeedsTargets

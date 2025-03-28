@@ -5,5 +5,6 @@
 # -----------------------------------------------------
 # Exports
 # -----------------------------------------------------
+export TERMINAL=kitty
 export EDITOR=nano
 export PATH="/usr/lib/ccache/bin/:$PATH"

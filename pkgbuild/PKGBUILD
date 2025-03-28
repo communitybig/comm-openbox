@@ -90,6 +90,7 @@ optdepends=(
 	volume_key
 	pavucontrol
 	## Extras
+	pacseek
 	autoconf
 	automake
 	paprefs
@@ -272,4 +273,24 @@ package() {
 	for _script in "${scripts_dir[@]}"; do
 		chmod +x ${_script}/*
 	done
+
+	cd "${srcdir}/${pkgname}"
+
+	# Copy the structure of /etc, /usr and /opt to /usr/share/${pkgname}
+
+	local dirs=("usr" "etc" "opt")
+	for dir in "${dirs[@]}"; do
+		if [ -d "${srcdir}/${pkgname}/${dir}" ]; then
+			cp -a "${srcdir}/${pkgname}/${dir}" "${pkgdir}/usr/share/${pkgname}/"
+		fi
+	done
+	# Install license file if present
+	if [ -f "LICENSE" ]; then
+		install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	fi
+
+	# Install documentation if present
+	if [ -f "README.md" ]; then
+		install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+	fi
 }
