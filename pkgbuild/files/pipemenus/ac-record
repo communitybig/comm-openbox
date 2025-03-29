@@ -1,90 +1,107 @@
 #!/usr/bin/env bash
-
-## Copyright (C) 2020-2024 Aditya Shakya <adi1090x@gmail.com>
-##
-## Openbox Pipemenu to Record Screen with slop and ffmpeg
-
+## Openbox Pipemenu to Record Screen with slop and ffmpeg (Leoberbert edit 💪)
 # Variables and functions
 MENUS_LIBDIR='/usr/share/archcraft/openbox/menulib'
 if ! . "$MENUS_LIBDIR/archcraft.cfg" 2> /dev/null; then
-	echo "Error: Failed to locate archcraft.cfg in $MENUS_LIBDIR" >&2
-	exit 1
+    echo "Error: Failed to locate archcraft.cfg in $MENUS_LIBDIR" >&2
+    exit 1
 fi
-
-# File
-time=`date +%Y-%m-%d-%H-%M-%S`
-screen=`xrandr | grep 'current' | head -n1 | cut -d',' -f2 | tr -d '[:blank:],current'`
-dir="`xdg-user-dir VIDEOS`/Screenrecorder"
+# File setup
+time=$(date +%Y-%m-%d-%H-%M-%S)
+screen=$(xrandr | grep 'current' | head -n1 | cut -d',' -f2 | tr -d '[:blank:],current')
+xdg_output="$(command -v xdg-user-dir &>/dev/null && xdg-user-dir VIDEOS)"
+videos_dir="${xdg_output:-$HOME/Videos}"
+dir="${videos_dir}/Screenrecorder"
 file="Capture_${time}.mp4"
-
-# Directory
-if [[ ! -d "$dir" ]]; then
-	mkdir -p "$dir"
-fi
-
-# notify
+mkdir -p "$dir"
+# Detect available terminal
+TERMINALS=("kitty" "alacritty" "xfce4-terminal" "xterm")
+for term in "${TERMINALS[@]}"; do
+    if command -v "$term" &>/dev/null; then
+        TERMINAL="$term"
+        break
+    fi
+done
+TERMINAL="${TERMINAL:-xterm}"  # fallback
+# Notify
 notify_user () {
-	notify_cmd="dunstify -u low -h string:x-dunst-stack-tag:obscreenrecord -i /usr/share/archcraft/icons/dunst/video.png"
-	if [[ -e "$dir/$file" ]]; then
-		${notify_cmd} "Saved in $dir"
-	else
-		${notify_cmd} "Video Deleted."
-	fi
+    notify_cmd="dunstify -u low -h string:x-dunst-stack-tag:obscreenrecord -i /usr/share/archcraft/icons/dunst/video.png"
+    if [[ -e "$dir/$file" ]]; then
+        ${notify_cmd} "Saved in $dir"
+    else
+        ${notify_cmd} "Video Deleted."
+    fi
 }
-
-# countdown
+# Countdown
 countdown () {
-	for sec in `seq $1 -1 1`; do
-		dunstify -t 1000 -h string:x-dunst-stack-tag:screenrecordtimer -i /usr/share/archcraft/icons/dunst/timer.png "Starting in : $sec"
-		sleep 1
-	done
+    for sec in $(seq $1 -1 1); do
+        dunstify -t 1000 -h string:x-dunst-stack-tag:screenrecordtimer -i /usr/share/archcraft/icons/dunst/timer.png "Starting in : $sec"
+        sleep 1
+    done
 }
-
-# capture
+# FFmpeg commands in terminal
+launch_recording () {
+    local ffmpeg_cmd="$1"
+    case "$TERMINAL" in
+        kitty|alacritty)
+            "$TERMINAL" -e bash -c "$ffmpeg_cmd; echo 'Press ENTER to close...'; read"
+            ;;
+        xfce4-terminal)
+            "$TERMINAL" --hold -e bash -c "$ffmpeg_cmd"
+            ;;
+        xterm)
+            "$TERMINAL" -e bash -c "$ffmpeg_cmd; echo 'Press ENTER to close...'; read"
+            ;;
+        *)
+            xterm -e bash -c "$ffmpeg_cmd; echo 'Press ENTER to close...'; read"
+            ;;
+    esac
+}
+# Fullscreen recording
 rec_screen() {
-	countdown '3'
-	sleep 1
-	if [[ "$1" == "noaudio" ]]; then
-		ffmpeg -video_size ${screen} -framerate 25 -f x11grab -i :0.0+0,0 ${dir}/${file}
-	else
-		ffmpeg -video_size ${screen} -framerate 25 -f x11grab -i :0.0+0,0 -f pulse -ac 2 -i default ${dir}/${file}
-	fi
-	notify_user
+    countdown '3'
+    sleep 1
+    if [[ "$1" == "noaudio" ]]; then
+        cmd="ffmpeg -video_size ${screen} -framerate 25 -f x11grab -i :0.0+0,0 '${dir}/${file}'"
+    else
+        cmd="ffmpeg -video_size ${screen} -framerate 25 -f x11grab -i :0.0+0,0 -f pulse -ac 2 -i default '${dir}/${file}'"
+    fi
+    launch_recording "$cmd"
+    notify_user
 }
-
+# Area selection recording
 rec_area() {
-	get_win_data=$(slop -f "%x %y %w %h %g %i") || exit 1
-	read -r X Y W H G ID < <(echo $get_win_data)
-	
-	countdown '3'
-	sleep 1
-	if [[ "$1" == "noaudio" ]]; then
-		ffmpeg -video_size ${W}x${H} -framerate 25 -f x11grab -i :0.0+${X},${Y} ${dir}/${file}
-	else
-		ffmpeg -video_size ${W}x${H} -framerate 25 -f x11grab -i :0.0+${X},${Y} -f pulse -ac 2 -i default ${dir}/${file}
-	fi
-	notify_user
+    get_win_data=$(slop -f "%x %y %w %h %g %i") || exit 1
+    read -r X Y W H G ID < <(echo $get_win_data)
+    countdown '3'
+    sleep 1
+    if [[ "$1" == "noaudio" ]]; then
+        cmd="ffmpeg -video_size ${W}x${H} -framerate 25 -f x11grab -i :0.0+${X},${Y} '${dir}/${file}'"
+    else
+        cmd="ffmpeg -video_size ${W}x${H} -framerate 25 -f x11grab -i :0.0+${X},${Y} -f pulse -ac 2 -i default '${dir}/${file}'"
+    fi
+    launch_recording "$cmd"
+    notify_user
 }
-
+# Menu or direct call
 if [[ "$1" == "--screen" ]]; then
-	rec_screen
+    rec_screen
 elif [[ "$1" == "--area" ]]; then
-	rec_area
+    rec_area
 elif [[ "$1" == "--screen-na" ]]; then
-	rec_screen noaudio
+    rec_screen noaudio
 elif [[ "$1" == "--area-na" ]]; then
-	rec_area noaudio
+    rec_area noaudio
 else
     menuStart
-		if [[ `pidof ffmpeg` ]]; then
-			menuItem 'Stop Screen Recorder' "pkill ffmpeg"
-			menuSeparator
-		fi
-        menuItem 'Record Desktop (With Audio)' "$0 --screen"
-        menuItem 'Record Desktop (No Audio)' "$0 --screen-na"
-        menuItem 'Record Area (With Audio)' "$0 --area"
-        menuItem 'Record Area (No Audio)' "$0 --area-na"
+        if pidof ffmpeg &>/dev/null; then
+            menuItem '🟥 Stop Screen Recorder' "pkill ffmpeg"
+            menuSeparator
+        fi
+        menuItem '🎥 Record Desktop (With Audio)' "$0 --screen"
+        menuItem '🔇 Record Desktop (No Audio)' "$0 --screen-na"
+        menuItem '📐 Record Area (With Audio)' "$0 --area"
+        menuItem '🔇 Record Area (No Audio)' "$0 --area-na"
     menuEnd
 fi
-
 exit 0

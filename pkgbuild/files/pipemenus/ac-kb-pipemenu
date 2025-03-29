@@ -1,9 +1,7 @@
 #!/usr/bin/env zsh
-
 ## Copyright (C) 2020-2024 Aditya Shakya <adi1090x@gmail.com>
 ##
 ## Openbox Pipemenu for displaying keybinds
-
 readonly KBSCRIPTDIR="/usr/share/archcraft/openbox/pipemenus"
 readonly KBSCRIPT="$KBSCRIPTDIR/ac-kb"
 readonly CFG_DIR="$HOME/.config/openbox"
@@ -55,20 +53,19 @@ fi
 if [[ $1 = '--keybinds' ]]; then
     "$KBSCRIPT" > /dev/null
     menuStart
-    menuSeparator "Openbox window commands"
+    menuSeparator "  Openbox window commands"
     while read -r a b c; do
         if [[ "$a" = "o" ]]; then
             curItem=$(printf "%-20s %s" "$b" "$c")
-            menuItem "$curItem" "echo >/dev/null 2>&1"
+            menuItem "  $curItem" "echo >/dev/null 2>&1"
         fi
     done < "$KBTEXT"
-
     menuSeparator
-    menuSeparator "Run commands"
+    menuSeparator "  Run commands"
     while read -r a b c; do
         if [[ "$a" = "x" ]]; then
             curItem=$(printf "%-20s %s" "$b" "$c")
-            menuItem "$curItem" "$c"
+            menuItem "  $curItem" "$c"
         fi
     done < "$KBTEXT"
     menuEnd
@@ -76,10 +73,11 @@ if [[ $1 = '--keybinds' ]]; then
 fi
 
 menuStart
-    menuItem "Backup and Edit rc.xml" "$KBSCRIPTDIR/ac-kb-pipemenu --rcedit"
+    menuItem "  Backup and Edit rc.xml" "$KBSCRIPTDIR/ac-kb-pipemenu --rcedit"
     menuSeparator
-    menuItem "Display Keybinds in window" "$KBSCRIPTDIR/ac-kb --gui"
-    echo '        <menu execute="/usr/share/archcraft/openbox/pipemenus/ac-kb-pipemenu --keybinds" id="Display keybinds" label="Display Keybinds in menu"/>'
+    menuItem "  Display Keybinds in window" "$KBSCRIPTDIR/ac-kb --gui"
+    echo '        <menu execute="/usr/share/archcraft/openbox/pipemenus/ac-kb-pipemenu --keybinds" id="Display keybinds" label="󰌌 Display Keybinds in menu"/>'
 menuEnd
 
 exit 0
+

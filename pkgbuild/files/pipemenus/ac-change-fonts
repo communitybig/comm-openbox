@@ -149,16 +149,16 @@ elif [[ "$1" == "--all" ]]; then
 	font_gtk
 
 else
-    menuStart
-        menuItem 'Status Bar (polybar)' "$0 --bar"
-        menuItem 'Launchers (rofi)' "$0 --rofi"
-        menuItem 'Terminal (alacritty)' "$0 --terminal"
-        menuItem 'Desktop (openbox)' "$0 --openbox"
-        menuItem 'Notifications (dunst)' "$0 --dunst"
-        menuItem 'Applications (gtk)' "$0 --gtk"
-        menuSeparator
-        menuItem 'Change Globally' "$0 --all"
-    menuEnd
+	menuStart
+	   menuItem '  Status Bar (polybar)' "$0 --bar"
+	   menuItem '  Launchers (rofi)' "$0 --rofi"
+	   menuItem '  Terminal (alacritty)' "$0 --terminal"
+	   menuItem '  Desktop (openbox)' "$0 --openbox"
+	   menuItem '  Notifications (dunst)' "$0 --dunst"
+	   menuItem '  Applications (gtk)' "$0 --gtk"
+	   menuSeparator
+	   menuItem '  Change Globally' "$0 --all"
+	menuEnd
 fi
 
 exit 0
