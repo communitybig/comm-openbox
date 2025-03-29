@@ -125,6 +125,8 @@ optdepends=(
 	ethtool
 	ffmpeg
 	egl-x11
+	xorg-xinit
+	xterm
 	xorg-bdftopcf
 	xorg-docs
 	xorg-font-util

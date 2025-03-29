@@ -152,7 +152,7 @@ else
 	menuStart
 	   menuItem '  Status Bar (polybar)' "$0 --bar"
 	   menuItem '  Launchers (rofi)' "$0 --rofi"
-	   menuItem '  Terminal (alacritty)' "$0 --terminal"
+	   menuItem '  Terminal (kitty)' "$0 --terminal"
 	   menuItem '  Desktop (openbox)' "$0 --openbox"
 	   menuItem '  Notifications (dunst)' "$0 --dunst"
 	   menuItem '  Applications (gtk)' "$0 --gtk"

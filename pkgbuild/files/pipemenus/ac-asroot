@@ -12,12 +12,12 @@ fi
 root_cmd="$HOME/.config/openbox/scripts/ob-asroot"
 # menu
 menuStart
-	menuItem ' Terminal (alacritty)' "$root_cmd 'alacritty'"
+	menuItem ' Terminal (kitty)' "$root_cmd 'kitty'"
 	menuItem ' File Manager (thunar)' "$root_cmd 'dbus-run-session thunar'"
 	menuItem ' Text Editor (geany)' "$root_cmd 'geany'"
 	menuSeparator
-	menuItem ' File Manager CLI (ranger)' "$root_cmd 'alacritty -e ranger'"
-	menuItem ' Text Editor CLI (vim)' "$root_cmd 'alacritty -e vim'"
+	menuItem ' File Manager CLI (ranger)' "$root_cmd 'kitty -e ranger'"
+	menuItem ' Text Editor CLI (vim)' "$root_cmd 'kitty -e vim'"
 	menuSeparator
 	menuItem ' QT5 Settings' "$root_cmd 'qt5ct'"
 	menuItem ' QT6 Settings' "$root_cmd 'qt6ct'"

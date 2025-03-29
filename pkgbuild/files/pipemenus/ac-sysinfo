@@ -66,9 +66,9 @@ ssid=`nmcli device status | grep "wifi" | tr -s '[:blank:]' | cut -d' ' -f4`
 
 menuStart
 menuSeparator " $USER@$HOSTNAME  |   `date +'%I:%M %p, %b %d %G'`"
-menuItem "󰌽  OS         :  $distro ∙ $os ∙ $machine" 'echo'
+menuItem "󰌽   OS         :  $distro ∙ $os ∙ $machine" 'echo'
 menuItem "  KERNEL     :  $kernel" 'echo'
-menuItem "  CPU        : $cpu" 'echo'
+menuItem "  CPU        :  $cpu" 'echo'
 menuItem "  MEMORY     :  $m_used ∙ $m_free ∙ $m_total" 'echo'
 menuItem "  SWAP       :  $s_used ∙ $s_free ∙ $s_total ∙ $swappiness" 'echo'
 menuItem "  INIT       :  $init" 'echo'

@@ -2,7 +2,7 @@
 ## Copyright (C) 2020-2024 Aditya Shakya <adi1090x@gmail.com>
 ##
 ## Openbox Pipemenu for places
-readonly terminal=alacritty
+readonly terminal=kitty
 readonly text_editor=geany
 readonly open_folder_cmd=thunar
 readonly default_open_cmd=exo-open
